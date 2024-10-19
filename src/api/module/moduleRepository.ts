@@ -1,7 +1,5 @@
-import type { Module } from "@/api/module/moduleModel";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import prisma from '@/config/prisma';
+import type { Module } from "./moduleModel";
 
 export class ModuleRepository {
   async findAllAsync(): Promise<Module[]> {

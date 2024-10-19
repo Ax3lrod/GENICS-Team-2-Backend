@@ -1,15 +1,18 @@
-import { moduleRouter } from "@/api/module/moduleRouter";
-import cors from "cors";
 import express, { type Express } from "express";
+
+import cors from "cors";
 import helmet from "helmet";
 import { pino } from "pino";
 
-import { openAPIRouter } from "@/api-docs/openAPIRouter";
 import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
+import { openAPIRouter } from "@/api-docs/openAPIRouter";
 import { userRouter } from "@/api/user/userRouter";
+import { moduleRouter } from "@/api/module/moduleRouter";
+
 import errorHandler from "@/common/middleware/errorHandler";
 import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
+
 import { env } from "@/common/utils/envConfig";
 
 const logger = pino({ name: "server start" });
@@ -31,7 +34,7 @@ app.use(requestLogger);
 // Routes
 app.use("/health-check", healthCheckRouter);
 app.use("/users", userRouter);
-app.use("/api/modules", moduleRouter);
+app.use("/modules", moduleRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

@@ -1,34 +1,41 @@
-import { PrismaClient, User as PrismaUser } from '@prisma/client';
-import type { User } from "@/api/user/userModel";
-
-const prisma = new PrismaClient();
+import prisma from '@/config/prisma';
+import type { User } from "./userModel";
 
 export class UserRepository {
   async findAllAsync(): Promise<User[]> {
-    try {
-      const users: PrismaUser[] = await prisma.user.findMany();
-      return users;
-    } catch (error: unknown) {
-      let errorMessage = 'Error fetching users';
-      if (error instanceof Error) {
-        errorMessage = `${errorMessage}: ${error.message}`;
-      }
-      throw new Error(errorMessage);
-    }
+    return await prisma.user.findMany({
+      select: {
+        id: true,
+        username: true,
+      },
+    });
   }
 
   async findByIdAsync(id: string): Promise<User | null> {
-    try {
-      const user: PrismaUser | null = await prisma.user.findUnique({
-        where: { id },
-      });
-      return user;
-    } catch (error: unknown) {
-      let errorMessage = `Error fetching user with ID ${id}`;
-      if (error instanceof Error) {
-        errorMessage = `${errorMessage}: ${error.message}`;
-      }
-      throw new Error(errorMessage);
-    }
+    return await prisma.user.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        username: true,
+        uploadedModules: {
+          select: {
+            id: true,
+            title: true,
+          },
+        },
+        votes: {
+          select: {
+            id: true,
+            voteType: true,
+            module: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
+      },
+    });
   }
 }

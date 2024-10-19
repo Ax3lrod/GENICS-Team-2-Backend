@@ -1,5 +1,5 @@
-import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
+import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import { moduleService } from "./moduleService";
 
 class ModuleController {

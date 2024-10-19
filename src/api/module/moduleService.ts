@@ -14,14 +14,14 @@ export class ModuleService {
     try {
       const modules = await this.moduleRepository.findAllAsync();
       if (!modules || modules.length === 0) {
-        throw new Error("No modules found");
+        return ServiceResponse.failure("No modules found", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<Module[]>("Modules found", modules);
-    } catch (ex) {
+      return ServiceResponse.success("Modules found", modules);
+    } catch (error) {
       return ServiceResponse.failure(
-        "An error occurred while retrieving modules.",
+        "An error occured while retrieving modules",
         null,
-        StatusCodes.INTERNAL_SERVER_ERROR,
+        StatusCodes.INTERNAL_SERVER_ERROR
       );
     }
   }

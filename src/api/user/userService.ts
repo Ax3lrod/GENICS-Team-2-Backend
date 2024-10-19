@@ -1,9 +1,7 @@
-import { StatusCodes } from "http-status-codes";
-
-import type { User } from "@/api/user/userModel";
-import { UserRepository } from "@/api/user/userRepository";
 import { ServiceResponse } from "@/common/models/serviceResponse";
-import { logger } from "@/server";
+import { StatusCodes } from "http-status-codes";
+import type { User } from "./userModel";
+import { UserRepository } from "./userRepository";
 
 export class UserService {
   private userRepository: UserRepository;
@@ -16,16 +14,14 @@ export class UserService {
     try {
       const users = await this.userRepository.findAllAsync();
       if (!users || users.length === 0) {
-        return ServiceResponse.failure("No Users found", null, StatusCodes.NOT_FOUND);
+        return ServiceResponse.failure("No users found", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<User[]>("Users found", users);
-    } catch (ex: unknown) {
-      const errorMessage = `Error finding all users: ${(ex as Error).message}`;
-      logger.error(errorMessage);
+      return ServiceResponse.success("Users found", users);
+    } catch (error) {
       return ServiceResponse.failure(
-        "An error occurred while retrieving users.",
+        "An error occurred while retrieving users",
         null,
-        StatusCodes.INTERNAL_SERVER_ERROR,
+        StatusCodes.INTERNAL_SERVER_ERROR
       );
     }
   }
@@ -36,11 +32,13 @@ export class UserService {
       if (!user) {
         return ServiceResponse.failure("User not found", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<User>("User found", user);
-    } catch (ex: unknown) {
-      const errorMessage = `Error finding user with id ${id}: ${(ex as Error).message}`;
-      logger.error(errorMessage);
-      return ServiceResponse.failure("An error occurred while finding user.", null, StatusCodes.INTERNAL_SERVER_ERROR);
+      return ServiceResponse.success("User found", user);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occurred while retrieving the user",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR
+      );
     }
   }
 }
