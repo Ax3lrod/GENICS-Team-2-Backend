@@ -1,3 +1,4 @@
+import { moduleRouter } from "@/api/module/moduleRouter";
 import cors from "cors";
 import express, { type Express } from "express";
 import helmet from "helmet";
@@ -30,6 +31,7 @@ app.use(requestLogger);
 // Routes
 app.use("/health-check", healthCheckRouter);
 app.use("/users", userRouter);
+app.use("/api/modules", moduleRouter);
 
 // Swagger UI
 app.use(openAPIRouter);
