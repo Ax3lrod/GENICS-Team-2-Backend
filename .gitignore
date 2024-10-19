@@ -14,6 +14,7 @@ build
 dist-ssr
 *.local
 .env
+/docker
 
 # Editor directories and files
 !.vscode/extensions.json
