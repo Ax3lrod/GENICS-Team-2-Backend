@@ -5,6 +5,7 @@ import { moduleRegistry } from "@/api/module/moduleRouter";
 import { userRegistry } from "@/api/user/userRouter";
 
 export function generateOpenAPIDocument() {
+  // jangan lupa tambahkan registy
   const registry = new OpenAPIRegistry([healthCheckRegistry, userRegistry, moduleRegistry]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 

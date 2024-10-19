@@ -3,7 +3,7 @@ import type { Request, RequestHandler, Response } from "express";
 import { moduleService } from "./moduleService";
 
 class ModuleController {
-  public getModules: RequestHandler = async (req: Request, res: Response) => {
+  public getModules: RequestHandler = async (_req: Request, res: Response) => {
     const serviceResponse = await moduleService.findAll();
     return handleServiceResponse(serviceResponse, res);
   };
