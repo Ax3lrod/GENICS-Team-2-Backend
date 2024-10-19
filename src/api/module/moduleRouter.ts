@@ -12,7 +12,7 @@ moduleRegistry.register("Module", ModuleSchema);
 
 moduleRegistry.registerPath({
   method: "get",
-  path: "/",
+  path: "/api/modules",
   tags: ["Module"],
   responses: createApiResponse(z.array(ModuleSchema), "Success"),
 });
