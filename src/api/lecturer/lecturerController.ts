@@ -1,14 +1,16 @@
 import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
-import { LecturerService } from "./lecturerService";
+import { lecturerService } from "./lecturerService";
 
 class LecturerController {
-  private lecturerService = new LecturerService();
+  public getLecturers: RequestHandler = async (_req: Request, res: Response) => {
+    const serviceResponse = await lecturerService.findAll();
+    handleServiceResponse(serviceResponse, res);
+  };
 
-  public getLecturerById: RequestHandler = async (req: Request, res: Response) => {
+  public getLecturer: RequestHandler = async (req: Request, res: Response) => {
     const { id } = req.params;
-
-    const serviceResponse = await this.lecturerService.findById(id);
+    const serviceResponse = await lecturerService.findById(id);
     handleServiceResponse(serviceResponse, res);
   };
 }

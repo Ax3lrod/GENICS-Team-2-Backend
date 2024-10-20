@@ -4,9 +4,28 @@ import type { Lecturer } from "./lecturerModel";
 import { LecturerRepository } from "./lecturerRepository";
 
 export class LecturerService {
-  private lecturerRepository = new LecturerRepository();
+  private lecturerRepository: LecturerRepository;
 
-  // Metode untuk mendapatkan dosen berdasarkan ID
+  constructor(repository: LecturerRepository = new LecturerRepository()) {
+    this.lecturerRepository = repository;
+  }
+
+  async findAll(): Promise<ServiceResponse<Lecturer[] | null>> {
+    try {
+      const lecturers = await this.lecturerRepository.findAll();
+      if (!lecturers || lecturers.length === 0) {
+        return ServiceResponse.failure("No lecturers found", null, StatusCodes.NOT_FOUND);
+      }
+      return ServiceResponse.success("Lecturers found", lecturers);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occurred while retrieving lecturers",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   async findById(id: string): Promise<ServiceResponse<Lecturer | null>> {
     try {
       const lecturer = await this.lecturerRepository.findById(id);
@@ -23,3 +42,5 @@ export class LecturerService {
     }
   }
 }
+
+export const lecturerService = new LecturerService();
