@@ -29,8 +29,10 @@ model Vote {
   userId   String
   module   Module   @relation(fields: [moduleId], references: [id])
   moduleId String
+  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
+  lecturerId  String
 
-  @@unique([userId, moduleId])
+  @@unique([userId, moduleId, lecturerId])
 }
 
 model Module {
@@ -45,3 +47,16 @@ model Module {
   userId      String?
   Vote        Vote[]
 }
+
+model Lecturer {
+  id         String   @id @default(uuid()) 
+  name       String
+  faculty    String
+  department String
+  upvotes    Int      @default(0)
+  downvotes  Int      @default(0)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  Vote       Vote[]   
+}
+

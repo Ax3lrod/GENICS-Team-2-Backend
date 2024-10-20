@@ -30,9 +30,39 @@ async function main() {
     },
   ];
 
+  const lecturers = [
+    {
+      name: "Dr. Andi Santoso",
+      faculty: "Fakultas Teknologi Informasi",
+      department: "Departemen Sistem Informasi",
+      upvotes: 10,
+      downvotes: 2,
+    },
+    {
+      name: "Prof. Budi Susanto",
+      faculty: "Fakultas Teknik",
+      department: "Departemen Teknik Komputer",
+      upvotes: 20,
+      downvotes: 1,
+    },
+    {
+      name: "Dr. Clara Rachmawati",
+      faculty: "Fakultas Ilmu Komputer",
+      department: "Departemen Rekayasa Perangkat Lunak",
+      upvotes: 15,
+      downvotes: 0,
+    },
+  ];
+
   for (const module of modules) {
     await prisma.module.create({
       data: module,
+    });
+  }
+
+  for (const lecturer of lecturers) {
+    await prisma.lecturer.create({
+      data: lecturer,
     });
   }
 

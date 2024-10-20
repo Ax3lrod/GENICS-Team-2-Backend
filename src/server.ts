@@ -6,8 +6,10 @@ import { pino } from "pino";
 
 import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
 import { openAPIRouter } from "@/api-docs/openAPIRouter";
-import { userRouter } from "@/api/user/userRouter";
+
+import { lecturerRouter } from "@/api/lecturer/lecturerRouter";
 import { moduleRouter } from "@/api/module/moduleRouter";
+import { userRouter } from "@/api/user/userRouter";
 
 import errorHandler from "@/common/middleware/errorHandler";
 import rateLimiter from "@/common/middleware/rateLimiter";
@@ -33,8 +35,10 @@ app.use(requestLogger);
 
 // Routes
 app.use("/health-check", healthCheckRouter);
-app.use("/api/users", userRouter);
+
+app.use("/api/lecturers", lecturerRouter);
 app.use("/api/modules", moduleRouter);
+app.use("/api/users", userRouter);
 
 // Swagger UI
 app.use(openAPIRouter);
