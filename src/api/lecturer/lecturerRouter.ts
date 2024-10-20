@@ -25,7 +25,7 @@ lecturerRouter.get("/", lecturerController.getLecturers);
 
 lecturerRegistry.registerPath({
   method: "get",
-  path: "/api/lecturer/{id}",
+  path: "/api/lecturers/{id}",
   tags: ["Lecturer"],
   request: { params: GetLecturerSchema.shape.params },
   responses: createApiResponse(LecturerSchema, "Success"),
