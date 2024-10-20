@@ -9,7 +9,7 @@ class LecturerController {
     const { id } = req.params;
 
     const serviceResponse = await this.lecturerService.findById(id);
-    return handleServiceResponse(serviceResponse, res);
+    handleServiceResponse(serviceResponse, res);
   };
 }
 
