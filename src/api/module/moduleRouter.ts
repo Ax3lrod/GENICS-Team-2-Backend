@@ -5,8 +5,8 @@ import { z } from "zod";
 
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 
-import { ModuleSchema } from "./moduleModel";
 import { moduleController } from "./moduleController";
+import { ModuleSchema } from "./moduleModel";
 
 export const moduleRegistry = new OpenAPIRegistry();
 export const moduleRouter: Router = express.Router();
@@ -15,7 +15,7 @@ moduleRegistry.register("Module", ModuleSchema);
 
 moduleRegistry.registerPath({
   method: "get",
-  path: "/modules",
+  path: "/api/modules",
   tags: ["Module"],
   responses: createApiResponse(z.array(ModuleSchema), "Success"),
 });
