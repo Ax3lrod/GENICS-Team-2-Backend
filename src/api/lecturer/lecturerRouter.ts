@@ -16,7 +16,7 @@ lecturerRegistry.register("Lecturer", LecturerSchema);
 
 lecturerRegistry.registerPath({
   method: "get",
-  path: "api/lecturers",
+  path: "/api/lecturers",
   tags: ["Lecturer"],
   responses: createApiResponse(z.array(LecturerSchema), "Success"),
 });
