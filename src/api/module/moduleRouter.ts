@@ -20,4 +20,23 @@ moduleRegistry.registerPath({
   responses: createApiResponse(z.array(ModuleSchema), "Success"),
 });
 
+moduleRegistry.registerPath({
+  method: "get",
+  path: "/api/modules/{id}",
+  tags: ["Module"],
+  responses: createApiResponse(ModuleSchema, "Success"),
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+        maxLength: 50,
+      },
+    },
+  ],
+});
+
 moduleRouter.get("/", moduleController.getModules);
+moduleRouter.get("/:id", moduleController.getModuleById);

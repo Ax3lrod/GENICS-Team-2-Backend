@@ -12,6 +12,19 @@ export type Module = {
   downvotes: number;
 };
 
+export type DetailedModule = {
+  id: string;
+  title: string;
+  description: string;
+  upvotes: number;
+  downvotes: number;
+  createdAt: Date;
+  updatedAt: Date;
+  User?: {
+    username: string;
+  } | null;
+};
+
 export const ModuleSchema = z.object({
   id: z.string(),
   title: z.string(),

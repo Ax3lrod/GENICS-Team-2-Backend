@@ -21,7 +21,23 @@ export class ModuleService {
       return ServiceResponse.failure(
         "An error occured while retrieving modules",
         null,
-        StatusCodes.INTERNAL_SERVER_ERROR
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findById(id: string): Promise<ServiceResponse<Module | null>> {
+    try {
+      const module = await this.moduleRepository.findByIdAsync(id);
+      if (!module) {
+        return ServiceResponse.failure("Module not found", null, StatusCodes.NOT_FOUND);
+      }
+      return ServiceResponse.success("Module found", module);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occured while retrieving the module",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
       );
     }
   }
