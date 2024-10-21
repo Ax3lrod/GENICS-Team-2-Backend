@@ -6,7 +6,7 @@ import { z } from "zod";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 
 import { moduleController } from "./moduleController";
-import { ModuleSchema } from "./moduleModel";
+import { DetailedModuleSchema, ModuleSchema } from "./moduleModel";
 
 export const moduleRegistry = new OpenAPIRegistry();
 export const moduleRouter: Router = express.Router();
@@ -20,4 +20,22 @@ moduleRegistry.registerPath({
   responses: createApiResponse(z.array(ModuleSchema), "Success"),
 });
 
+moduleRegistry.registerPath({
+  method: "get",
+  path: "/api/modules/{id}",
+  tags: ["Module"],
+  responses: createApiResponse(DetailedModuleSchema, "Success"),
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+      },
+    },
+  ],
+});
+
 moduleRouter.get("/", moduleController.getModules);
+moduleRouter.get("/:id", moduleController.getModuleById);
