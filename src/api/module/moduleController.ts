@@ -1,5 +1,6 @@
-import { handleServiceResponse } from "@/common/utils/httpHandlers";
+import { handleServiceResponse, validateRequest } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
+import { GetModuleSchema } from "./moduleModel";
 import { moduleService } from "./moduleService";
 
 class ModuleController {
@@ -9,7 +10,9 @@ class ModuleController {
   };
 
   public getModuleById: RequestHandler = async (req: Request, res: Response) => {
+    validateRequest(GetModuleSchema);
     const { id } = req.params;
+
     const serviceResponse = await moduleService.findById(id);
     handleServiceResponse(serviceResponse, res);
   };
