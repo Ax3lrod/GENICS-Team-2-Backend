@@ -8,7 +8,7 @@ class UserController {
     handleServiceResponse(serviceResponse, res);
   };
 
-  public getUser: RequestHandler = async (req: Request, res: Response) => {
+  public getUserById: RequestHandler = async (req: Request, res: Response) => {
     const id = req.params.id;
     const serviceResponse = await userService.findById(id);
     handleServiceResponse(serviceResponse, res);

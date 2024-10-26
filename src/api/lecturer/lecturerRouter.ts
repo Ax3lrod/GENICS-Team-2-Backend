@@ -31,4 +31,4 @@ lecturerRegistry.registerPath({
   responses: createApiResponse(LecturerSchema, "Success"),
 });
 
-lecturerRouter.get("/:id", validateRequest(GetLecturerSchema), lecturerController.getLecturer);
+lecturerRouter.get("/:id", lecturerController.getLecturer);

@@ -15,6 +15,9 @@ enum VoteType {
 model User {
   id              String   @id @default(uuid())
   username        String   @unique
+  email           String   @unique
+  faculty         String
+  major           String
   password        String
   uploadedModules Module[]
   votes           Vote[]

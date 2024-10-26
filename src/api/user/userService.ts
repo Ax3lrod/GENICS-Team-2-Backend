@@ -10,7 +10,7 @@ export class UserService {
     this.userRepository = repository;
   }
 
-  async findAll(): Promise<ServiceResponse<User[] | null>> {
+  async findAll(){
     try {
       const users = await this.userRepository.findAllAsync();
       if (!users || users.length === 0) {
@@ -26,7 +26,7 @@ export class UserService {
     }
   }
 
-  async findById(id: string): Promise<ServiceResponse<User | null>> {
+  async findById(id: string) {
     try {
       const user = await this.userRepository.findByIdAsync(id);
       if (!user) {

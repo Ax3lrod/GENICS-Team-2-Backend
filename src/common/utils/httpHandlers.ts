@@ -10,7 +10,9 @@ export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, res
 
 export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
   try {
+    console.log('Request Body:', req.body);
     const { body, query, params } = req;
+    schema.parse(req.body);
     schema.parse({ body, query, params });
     next();
   } catch (err) {
