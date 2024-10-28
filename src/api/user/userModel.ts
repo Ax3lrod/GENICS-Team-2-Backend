@@ -1,5 +1,6 @@
 import { commonValidations } from "@/common/utils/commonValidation";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import { email } from "envalid";
 import { z } from "zod";
 
 extendZodWithOpenApi(z);
@@ -7,6 +8,10 @@ extendZodWithOpenApi(z);
 export type User = {
   id: string;
   username: string;
+  email: string;
+  faculty: string;
+  major: string;
+  password: string;
   uploadedModules?: {
     id: string;
     title: string
@@ -24,6 +29,10 @@ export type User = {
 export const UserSchema = z.object({
   id: z.string(),
   username: z.string(),
+  email: z.string(),
+  faculty: z.string(),
+  major: z.string(),
+  password: z.string(),
   uploadedModules: z.array(z.object({
     id: z.string(),
     title: z.string(),
