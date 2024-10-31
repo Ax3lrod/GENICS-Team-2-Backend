@@ -6,12 +6,13 @@ import { z } from "zod";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 
 import { authController } from "./authController";
-import { RegisterSchema } from "./authModel";
+import { LoginSchema, RegisterSchema } from "./authModel";
 
 export const authRegistry = new OpenAPIRegistry();
 export const authRouter: Router = express.Router();
 
-authRegistry.register("Auth", RegisterSchema);
+authRegistry.register("RegisterSchema", RegisterSchema);
+authRegistry.register("LoginSchema", LoginSchema);
 
 authRegistry.registerPath({
   method: "post",
@@ -22,13 +23,31 @@ authRegistry.registerPath({
     content: {
       "application/json": {
         schema: {
-          $ref: "#/components/schemas/Auth",
+          $ref: "#/components/schemas/RegisterSchema",
         },
       },
     },
   },
-  responses: createApiResponse(z.array(RegisterSchema), "Success"),
+  responses: createApiResponse(RegisterSchema, "Success"),
 });
 
-authRouter.post("/register", authController.register);
+authRegistry.registerPath({
+  method: "post",
+  path: "/api/auth/login",
+  tags: ["Auth"],
+  requestBody: {
+    required: true,
+    content: {
+      "application/json": {
+        schema: {
+          $ref: "#/components/schemas/LoginSchema",
+        },
+      },
+    },
+  },
+  responses: createApiResponse(LoginSchema, "Success"),
+});
+
+authRouter.post("/register", validateRequest(RegisterSchema), authController.register);
+authRouter.post("/login", validateRequest(LoginSchema), authController.login);
 authRouter.post("/forget-password", authController.forgetPassword);

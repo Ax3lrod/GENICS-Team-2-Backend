@@ -65,6 +65,7 @@ export class UserRepository {
         id: true,
         username: true,
         email: true,
+        password: true,
         faculty: true,
         major: true,
         uploadedModules: {

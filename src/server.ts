@@ -4,8 +4,8 @@ import cors from "cors";
 import helmet from "helmet";
 import { pino } from "pino";
 
-import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
 import { openAPIRouter } from "@/api-docs/openAPIRouter";
+import { healthCheckRouter } from "@/api/healthCheck/healthCheckRouter";
 
 import { lecturerRouter } from "@/api/lecturer/lecturerRouter";
 import { moduleRouter } from "@/api/module/moduleRouter";
@@ -32,7 +32,7 @@ app.use(helmet());
 app.use(rateLimiter);
 
 // Request logging
-app.use(requestLogger);
+// app.use(requestLogger); terlalu banyak logging bingung
 
 // Routes
 app.use("/health-check", healthCheckRouter);

@@ -2,6 +2,7 @@ import { ServiceResponse } from "@/common/models/serviceResponse";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import { nanoid } from "nanoid-cjs";
+import jwt from "jsonwebtoken";
 import type { User } from "../user/userModel";
 import { UserRepository } from "../user/userRepository";
 import { EmailService } from "./emailService";
@@ -9,6 +10,9 @@ import { EmailService } from "./emailService";
 export class AuthService {
   private userRepository: UserRepository;
   private emailService: EmailService;
+
+  private readonly JWT_SECRET = process.env.JWT_SECRET || "secretkeybro";
+  private readonly JWT_EXPIRES_IN = "24h";
 
   constructor(repository: UserRepository = new UserRepository(), emailService: EmailService = new EmailService()) {
     this.userRepository = repository;
@@ -18,13 +22,15 @@ export class AuthService {
   async register(req: User) {
     try {
       const existingUsername = await this.userRepository.findByUsername(req.username);
+
       if (existingUsername) {
-        return ServiceResponse.failure("Username already exist", null, StatusCodes.CONFLICT);
+        return ServiceResponse.failure("Username already exists", null, StatusCodes.CONFLICT);
       }
 
       const existingEmail = await this.userRepository.findByEmail(req.email);
+
       if (existingEmail) {
-        return ServiceResponse.failure("Email already exist", null, StatusCodes.CONFLICT);
+        return ServiceResponse.failure("Email already exists", null, StatusCodes.CONFLICT);
       }
 
       const salt = await bcrypt.genSalt(10);
@@ -39,11 +45,47 @@ export class AuthService {
       );
 
       return ServiceResponse.success("User registered successfully", newUser);
-    } catch (error) {
-      return ServiceResponse.failure("An error occurred during registration", null, StatusCodes.INTERNAL_SERVER_ERROR);
+    } catch (error: any) {
+      return ServiceResponse.failure(
+        `Registration failed: ${error.message || "Unknown error"}`,
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
     }
   }
 
+  async login(username: string, password: string) {
+    try {
+      const user = await this.userRepository.findByUsername(username);
+      if (!user) {
+        return ServiceResponse.failure("Invalid username or password", null, StatusCodes.UNAUTHORIZED);
+      }
+
+      // Verify password
+      const isPasswordValid = await bcrypt.compare(password, user.password);
+      if (!isPasswordValid) {
+        return ServiceResponse.failure("Invalid username or password", null, StatusCodes.UNAUTHORIZED);
+      }
+
+      const token = jwt.sign(
+        {
+          id: user.id,
+          username: user.username,
+          email: user.email,
+        },
+        this.JWT_SECRET,
+        { expiresIn: this.JWT_EXPIRES_IN },
+      );
+
+      const { password: _, ...userWithoutPassword } = user;
+      return ServiceResponse.success("Login successful", {
+        user: userWithoutPassword,
+        token,
+      });
+    } catch (error) {
+      return ServiceResponse.failure("An error occurred during login", null, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
   async forgetPassword(email: string) {
     try {
       const user = await this.userRepository.findByEmail(email);
