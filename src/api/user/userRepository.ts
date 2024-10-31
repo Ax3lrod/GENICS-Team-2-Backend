@@ -1,4 +1,5 @@
 import prisma from "@/config/prisma";
+import bcrypt from "bcrypt";
 import type { User } from "./userModel";
 
 export class UserRepository {
@@ -118,6 +119,44 @@ export class UserRepository {
           },
         },
       },
+    });
+  }
+
+  async savePasswordResetToken(id: string, token: string) {
+    return await prisma.user.update({
+      where: { id: id },
+      data: {
+        passwordResetToken: token,
+        passwordResetExpires: new Date(Date.now() + 3600000),
+      },
+    });
+  }
+
+  async findByIdAndToken(id: string, token: string) {
+    const user = await prisma.user.findUnique({
+      where: { id: id },
+      select: {
+        id: true,
+        passwordResetToken: true,
+        passwordResetExpires: true,
+      },
+    });
+
+    if (user?.passwordResetToken && user.passwordResetExpires && user?.passwordResetExpires > new Date()) {
+      const isMatch = await bcrypt.compare(token, user.passwordResetToken);
+      if (isMatch) {
+        return user;
+      }
+    }
+
+    return null;
+  }
+
+  async resetPassword(id: string, newPassword: string) {
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    return prisma.user.update({
+      where: { id: id },
+      data: { password: hashedPassword, passwordResetToken: null, passwordResetExpires: null },
     });
   }
 }

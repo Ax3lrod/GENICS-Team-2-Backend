@@ -1,4 +1,3 @@
-import { commonValidations } from "@/common/utils/commonValidation";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import { z } from "zod";
 
@@ -10,6 +9,16 @@ export const RegisterSchema = z.object({
   faculty: z.string().min(1, "Faculty is required"),
   major: z.string().min(1, "Major is required"),
   password: z.string().min(6, "Password must be at least 6 characters long"),
+});
+
+export const ForgetPasswordSchema = z.object({
+  email: z.string().email("Invalid email format"),
+});
+
+export const ResetPasswordSchema = z.object({
+  userId: z.string().uuid("Invalid user ID"),
+  token: z.string().min(1, "Token is required"),
+  newPassword: z.string().min(6, "Password must be at least 6 characters long"),
 });
 
 export const LoginSchema = z.object({
