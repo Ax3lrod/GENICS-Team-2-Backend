@@ -1,8 +1,8 @@
-import prisma from '@/config/prisma';
+import prisma from "@/config/prisma";
 import type { User } from "./userModel";
 
 export class UserRepository {
-  async createUser(username: string, email: string, faculty: string, major: string, password: string, ) {
+  async createUser(username: string, email: string, faculty: string, major: string, password: string) {
     return await prisma.user.create({
       data: {
         username,
@@ -14,7 +14,7 @@ export class UserRepository {
     });
   }
 
-  async findAllAsync(){
+  async findAllAsync() {
     return await prisma.user.findMany({
       select: {
         id: true,
@@ -26,7 +26,7 @@ export class UserRepository {
     });
   }
 
-  async findByIdAsync(id: string){
+  async findByIdAsync(id: string) {
     return await prisma.user.findUnique({
       where: { id },
       select: {
@@ -57,13 +57,14 @@ export class UserRepository {
     });
   }
 
-  async findByUsername(username: string){
+  async findByUsername(username: string) {
     return await prisma.user.findUnique({
       where: { username },
       select: {
         id: true,
         username: true,
         email: true,
+        password: true,
         faculty: true,
         major: true,
         uploadedModules: {
@@ -88,7 +89,7 @@ export class UserRepository {
     });
   }
 
-  async findByEmail(email: string){
+  async findByEmail(email: string) {
     return await prisma.user.findUnique({
       where: { email },
       select: {
