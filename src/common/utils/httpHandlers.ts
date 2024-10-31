@@ -10,10 +10,8 @@ export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, res
 
 export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
   try {
-    console.log('Request Body:', req.body);
-    const { body, query, params } = req;
+    // Validate only the request body against the schema
     schema.parse(req.body);
-    schema.parse({ body, query, params });
     next();
   } catch (err) {
     const errorMessage = `Invalid input: ${(err as ZodError).errors.map((e) => e.message).join(", ")}`;
