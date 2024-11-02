@@ -1,4 +1,5 @@
 import prisma from "@/config/prisma";
+import { VoteType } from "@prisma/client";
 import type { DetailedModule, Module } from "./moduleModel";
 
 export class ModuleRepository {
@@ -8,8 +9,15 @@ export class ModuleRepository {
         id: true,
         title: true,
         description: true,
-        upvotes: true,
-        downvotes: true,
+        upvoteCount: true,
+        downvoteCount: true,
+        createdAt: true,
+        updatedAt: true,
+        User: {
+          select: {
+            username: true,
+          },
+        },
       },
     });
   }
@@ -21,8 +29,8 @@ export class ModuleRepository {
         id: true,
         title: true,
         description: true,
-        upvotes: true,
-        downvotes: true,
+        upvoteCount: true,
+        downvoteCount: true,
         createdAt: true,
         updatedAt: true,
         User: {
@@ -32,5 +40,63 @@ export class ModuleRepository {
         },
       },
     });
+  }
+
+  async getVoteByUserIdAndModuleId(userId: string, moduleId: string) {
+    return prisma.moduleVoteRecord.findUnique({
+      where: {
+        userId_moduleId: {
+          userId,
+          moduleId,
+        },
+      },
+    });
+  }
+
+  async addVote(userId: string, moduleId: string) {
+    const vote = await prisma.moduleVoteRecord.create({
+      data: {
+        userId,
+        moduleId,
+        voteType: VoteType.UPVOTE,
+      },
+    });
+
+    await prisma.module.update({
+      where: {
+        id: moduleId,
+      },
+      data: {
+        upvoteCount: {
+          increment: 1,
+        },
+      },
+    });
+
+    return vote;
+  }
+
+  async deleteVote(userId: string, moduleId: string) {
+    const vote = await prisma.moduleVoteRecord.delete({
+      where: {
+        userId_moduleId: {
+          userId,
+          moduleId,
+        },
+      },
+    });
+
+    await prisma.module.update({
+      where: {
+        id: moduleId,
+      },
+      data: {
+        upvoteCount: {
+          decrement: 1,
+        },
+      },
+    });
+
+    return vote;
   }
 }

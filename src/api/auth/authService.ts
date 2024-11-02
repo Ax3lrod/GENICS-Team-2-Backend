@@ -1,8 +1,8 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
-import { nanoid } from "nanoid-cjs";
 import jwt from "jsonwebtoken";
+import { nanoid } from "nanoid-cjs";
 import type { User } from "../user/userModel";
 import { UserRepository } from "../user/userRepository";
 import { EmailService } from "./emailService";
@@ -83,6 +83,7 @@ export class AuthService {
         token,
       });
     } catch (error) {
+      console.log("🚀 ~ AuthService ~ login ~ error:", error);
       return ServiceResponse.failure("An error occurred during login", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }

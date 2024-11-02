@@ -16,6 +16,7 @@ import errorHandler from "@/common/middleware/errorHandler";
 import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
 
+import passport from "@/common/strategy/passport/passportStrategy";
 import { env } from "@/common/utils/envConfig";
 
 const logger = pino({ name: "server start" });
@@ -25,6 +26,7 @@ const app: Express = express();
 app.set("trust proxy", true);
 
 // Middlewares
+app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));

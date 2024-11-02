@@ -22,35 +22,35 @@ model User {
   passwordResetToken    String?
   passwordResetExpires  DateTime?
   uploadedModules       Module[]
-  votes                 Vote[]
+  votes                 ModuleVoteRecord[]
   createdAt             DateTime @default(now())
   updatedAt             DateTime @updatedAt
 }
 
-model Vote {
+model ModuleVoteRecord {
   id       String   @id @default(uuid())
   voteType VoteType
-  user     User     @relation(fields: [userId], references: [id])
   userId   String
-  module   Module   @relation(fields: [moduleId], references: [id])
   moduleId String
-  lecturer Lecturer @relation(fields: [lecturerId], references: [id])
-  lecturerId  String
 
-  @@unique([userId, moduleId, lecturerId])
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module   Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, moduleId])
 }
 
 model Module {
-  id          String   @id @default(uuid())
-  title       String
-  description String
-  upvotes     Int      @default(0)
-  downvotes   Int      @default(0)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  User        User?    @relation(fields: [userId], references: [id])
-  userId      String?
-  Vote        Vote[]
+  id                String   @id @default(uuid())
+  title             String
+  description       String
+  upvoteCount       Int      @default(0)
+  downvoteCount     Int      @default(0)
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  userId            String?
+  votes             ModuleVoteRecord[]
+
+  User              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Lecturer {
@@ -62,6 +62,5 @@ model Lecturer {
   downvotes  Int      @default(0)
   createdAt  DateTime @default(now())
   updatedAt  DateTime @updatedAt
-  Vote       Vote[]   
 }
 

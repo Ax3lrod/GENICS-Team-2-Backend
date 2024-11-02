@@ -41,6 +41,46 @@ export class ModuleService {
       );
     }
   }
+
+  async upvoteModuleById(userId: string, moduleId: string) {
+    try {
+      const existingVote = await this.moduleRepository.getVoteByUserIdAndModuleId(userId, moduleId);
+
+      if (existingVote) {
+        await this.moduleRepository.deleteVote(userId, moduleId);
+        return ServiceResponse.success("Module unvoted successfully", null);
+      }
+
+      await this.moduleRepository.addVote(userId, moduleId);
+      return ServiceResponse.success("Module upvoted successfully", null);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occured while retrieving the module",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async downvoteModuleById(userId: string, moduleId: string) {
+    try {
+      const existingVote = await this.moduleRepository.getVoteByUserIdAndModuleId(userId, moduleId);
+
+      if (existingVote) {
+        await this.moduleRepository.deleteVote(userId, moduleId);
+        return ServiceResponse.success("Module unvoted successfully", null);
+      }
+
+      await this.moduleRepository.addVote(userId, moduleId);
+      return ServiceResponse.success("Module downvoted successfully", null);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occured while retrieving the module",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 }
 
 export const moduleService = new ModuleService();
