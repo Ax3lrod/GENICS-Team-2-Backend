@@ -6,9 +6,8 @@ import { UsersTableTestHelper } from "@/__test__/helpers/UsersTableTestHelper";
 import type { ServiceResponse } from "@/common/models/serviceResponse";
 
 import { ModuleVoteRecordTableTestHelper } from "@/__test__/helpers/ModuleVoteRecordTableTestHelper";
-import { env } from "@/config/env";
+import { tokenManager } from "@/common/utils/tokenanager";
 import { app } from "@/server";
-import jwt from "jsonwebtoken";
 import type { Module } from "../moduleModel";
 
 describe("Module API Endpoints", () => {
@@ -76,14 +75,7 @@ describe("Module API Endpoints", () => {
     it("should upvote a module for a valid ID with JWT", async () => {
       // Arrange
       await UsersTableTestHelper.insertUser({ id: "1", username: "genics", password: "password" });
-      const token = jwt.sign(
-        {
-          id: "1",
-          username: "genics",
-        },
-        env.JWT_SECRET,
-        { expiresIn: "15s" },
-      );
+      const token = tokenManager.generateToken({ id: "1", username: "genics" });
 
       const testId = "1";
       await ModuleTestTableHelper.insertModule({ id: testId });
@@ -105,14 +97,7 @@ describe("Module API Endpoints", () => {
     it("should downvote a module for a valid ID with JWT", async () => {
       // Arrange
       await UsersTableTestHelper.insertUser({ id: "1", username: "genics", password: "password" });
-      const token = jwt.sign(
-        {
-          id: "1",
-          username: "genics",
-        },
-        env.JWT_SECRET as string,
-        { expiresIn: "15s" },
-      );
+      const token = tokenManager.generateToken({ id: "1", username: "genics" });
 
       const testId = "1";
       await ModuleTestTableHelper.insertModule({ id: testId });

@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 
 const options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: env.JWT_SECRET || "genicsgenics",
+  secretOrKey: env.JWT_SECRET,
 };
 
 export const jwtStrategy = new JwtStrategy(options, async (jwtPayload: JwtPayload, done) => {

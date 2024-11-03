@@ -1,4 +1,5 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { tokenManager } from "@/common/utils/tokenanager";
 import { env } from "@/config/env";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
@@ -11,9 +12,6 @@ import { EmailService } from "./emailService";
 export class AuthService {
   private userRepository: UserRepository;
   private emailService: EmailService;
-
-  private readonly JWT_SECRET = env.JWT_SECRET || "secretkeybro";
-  private readonly JWT_EXPIRES_IN = "24h";
 
   constructor(repository: UserRepository = new UserRepository(), emailService: EmailService = new EmailService()) {
     this.userRepository = repository;
@@ -68,15 +66,11 @@ export class AuthService {
         return ServiceResponse.failure("Invalid username or password", null, StatusCodes.UNAUTHORIZED);
       }
 
-      const token = jwt.sign(
-        {
-          id: user.id,
-          username: user.username,
-          email: user.email,
-        },
-        this.JWT_SECRET,
-        { expiresIn: this.JWT_EXPIRES_IN },
-      );
+      const token = tokenManager.generateToken({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+      });
 
       const { password: _, ...userWithoutPassword } = user;
       return ServiceResponse.success("Login successful", {
@@ -84,7 +78,6 @@ export class AuthService {
         token,
       });
     } catch (error) {
-      console.log("🚀 ~ AuthService ~ login ~ error:", error);
       return ServiceResponse.failure("An error occurred during login", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }

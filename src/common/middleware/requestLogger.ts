@@ -1,11 +1,10 @@
 import { randomUUID } from "node:crypto";
 import type { IncomingMessage, ServerResponse } from "node:http";
+import { env } from "@/config/env";
 import type { Request, RequestHandler, Response } from "express";
 import { StatusCodes, getReasonPhrase } from "http-status-codes";
 import type { LevelWithSilent } from "pino";
 import { type CustomAttributeKeys, type Options, pinoHttp } from "pino-http";
-
-import { env } from "@/common/utils/envConfig";
 
 enum LogLevel {
   Fatal = "fatal",
