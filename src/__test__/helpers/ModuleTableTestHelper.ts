@@ -1,16 +1,18 @@
 import prisma from "@/config/prisma";
+import type { Module } from "@prisma/client";
 
 export const ModuleTestTableHelper = {
   async insertModule({
     id = "module-123",
-    title = "Module 1",
-    description = "This is the description of module 1",
+    title = "title",
+    description = "description",
     upvoteCount = 0,
     downvoteCount = 0,
     createdAt = new Date(),
     updatedAt = new Date(),
+    userId = "user-123",
   }) {
-    await prisma.module.create({
+    return await prisma.module.create({
       data: {
         id,
         title,
@@ -19,6 +21,7 @@ export const ModuleTestTableHelper = {
         downvoteCount,
         createdAt,
         updatedAt,
+        userId,
       },
     });
   },

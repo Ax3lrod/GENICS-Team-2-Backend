@@ -1,5 +1,5 @@
 import prisma from "@/config/prisma";
-import { VoteType } from "@prisma/client";
+import { type ModuleVoteRecord, VoteType } from "@prisma/client";
 import type { DetailedModule, Module } from "./moduleModel";
 
 export class ModuleRepository {
@@ -42,7 +42,7 @@ export class ModuleRepository {
     });
   }
 
-  async getVoteByUserIdAndModuleId(userId: string, moduleId: string) {
+  async getVoteByUserIdAndModuleId(userId: string, moduleId: string): Promise<ModuleVoteRecord | null> {
     return prisma.moduleVoteRecord.findUnique({
       where: {
         userId_moduleId: {
@@ -53,7 +53,7 @@ export class ModuleRepository {
     });
   }
 
-  async addVote(userId: string, moduleId: string) {
+  async addVote(userId: string, moduleId: string): Promise<ModuleVoteRecord> {
     const vote = await prisma.moduleVoteRecord.create({
       data: {
         userId,
@@ -76,7 +76,7 @@ export class ModuleRepository {
     return vote;
   }
 
-  async deleteVote(userId: string, moduleId: string) {
+  async deleteVote(userId: string, moduleId: string): Promise<ModuleVoteRecord | null> {
     const vote = await prisma.moduleVoteRecord.delete({
       where: {
         userId_moduleId: {

@@ -9,7 +9,7 @@ export const UsersTableTestHelper = {
     major = "Software Engineering",
     password = "password",
   }) {
-    await prisma.user.create({
+    return await prisma.user.create({
       data: {
         id,
         username,
