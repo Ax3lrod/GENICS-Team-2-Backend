@@ -44,6 +44,12 @@ export class ModuleService {
 
   async upvoteModuleById(userId: string, moduleId: string) {
     try {
+      const module = await this.moduleRepository.findByIdAsync(moduleId);
+
+      if (!module) {
+        return ServiceResponse.failure("Module not found", null, StatusCodes.NOT_FOUND);
+      }
+
       const existingVote = await this.moduleRepository.getVoteByUserIdAndModuleId(userId, moduleId);
 
       if (existingVote) {
@@ -64,6 +70,12 @@ export class ModuleService {
 
   async downvoteModuleById(userId: string, moduleId: string) {
     try {
+      const module = await this.moduleRepository.findByIdAsync(moduleId);
+
+      if (!module) {
+        return ServiceResponse.failure("Module not found", null, StatusCodes.NOT_FOUND);
+      }
+
       const existingVote = await this.moduleRepository.getVoteByUserIdAndModuleId(userId, moduleId);
 
       if (existingVote) {

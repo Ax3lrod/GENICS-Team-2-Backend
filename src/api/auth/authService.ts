@@ -1,5 +1,5 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
-import { tokenManager } from "@/common/utils/tokenanager";
+import { tokenManager } from "@/common/utils/tokenManager";
 import { env } from "@/config/env";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
