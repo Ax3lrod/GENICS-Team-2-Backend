@@ -1,4 +1,5 @@
 import type { JwtPayload } from "@/common/types/jwtPayload";
+import { env } from "@/config/env";
 import { PrismaClient } from "@prisma/client";
 import dotenv from "dotenv";
 import passport from "passport";
@@ -9,7 +10,7 @@ const prisma = new PrismaClient();
 
 const options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET || "genicsgenics",
+  secretOrKey: env.JWT_SECRET || "genicsgenics",
 };
 
 passport.use(

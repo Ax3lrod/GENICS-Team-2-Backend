@@ -6,6 +6,7 @@ import { UsersTableTestHelper } from "@/__test__/helpers/UsersTableTestHelper";
 import type { ServiceResponse } from "@/common/models/serviceResponse";
 
 import { ModuleVoteRecordTableTestHelper } from "@/__test__/helpers/ModuleVoteRecordTableTestHelper";
+import { env } from "@/config/env";
 import { app } from "@/server";
 import jwt from "jsonwebtoken";
 import type { Module } from "../moduleModel";
@@ -80,7 +81,7 @@ describe("Module API Endpoints", () => {
           id: "1",
           username: "genics",
         },
-        process.env.JWT_SECRET as string,
+        env.JWT_SECRET,
         { expiresIn: "15s" },
       );
 
@@ -109,7 +110,7 @@ describe("Module API Endpoints", () => {
           id: "1",
           username: "genics",
         },
-        process.env.JWT_SECRET as string,
+        env.JWT_SECRET as string,
         { expiresIn: "15s" },
       );
 

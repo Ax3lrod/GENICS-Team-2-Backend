@@ -1,4 +1,5 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { env } from "@/config/env";
 import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
@@ -11,7 +12,7 @@ export class AuthService {
   private userRepository: UserRepository;
   private emailService: EmailService;
 
-  private readonly JWT_SECRET = process.env.JWT_SECRET || "secretkeybro";
+  private readonly JWT_SECRET = env.JWT_SECRET || "secretkeybro";
   private readonly JWT_EXPIRES_IN = "24h";
 
   constructor(repository: UserRepository = new UserRepository(), emailService: EmailService = new EmailService()) {

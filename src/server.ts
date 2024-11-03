@@ -17,7 +17,7 @@ import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
 
 import passport from "@/common/strategy/passport/passportStrategy";
-import { env } from "@/common/utils/envConfig";
+import { env } from "./config/env";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
