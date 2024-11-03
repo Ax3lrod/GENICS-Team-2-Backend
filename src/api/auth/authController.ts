@@ -18,8 +18,8 @@ class AuthController {
   public resetPassword: RequestHandler = async (req: Request, res: Response) => {
     const { id, token, newPassword } = req.body;
     const serviceResponse = await authService.resetPassword(id, token, newPassword);
-  }
-  
+  };
+
   public login: RequestHandler = async (req: Request, res: Response) => {
     const { username, password } = req.body;
     const serviceResponse = await authService.login(username, password);

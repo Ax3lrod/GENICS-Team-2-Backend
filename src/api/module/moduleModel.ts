@@ -8,16 +8,18 @@ export type Module = {
   id: string;
   title: string;
   description: string;
-  upvotes: number;
-  downvotes: number;
+  upvoteCount: number;
+  downvoteCount: number;
+  createdAt: Date;
+  updatedAt: Date;
 };
 
 export type DetailedModule = {
   id: string;
   title: string;
   description: string;
-  upvotes: number;
-  downvotes: number;
+  upvoteCount: number;
+  downvoteCount: number;
   createdAt: Date;
   updatedAt: Date;
   User?: {
@@ -29,16 +31,16 @@ export const ModuleSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  upvotes: z.number(),
-  downvotes: z.number(),
+  upvoteCount: z.number(),
+  downvoteCount: z.number(),
 });
 
 export const DetailedModuleSchema = z.object({
   id: z.string(),
   title: z.string(),
   description: z.string(),
-  upvotes: z.number(),
-  downvotes: z.number(),
+  upvoteCount: z.number(),
+  downvoteCount: z.number(),
   createdAt: z.date(),
   updatedAt: z.date(),
   User: z

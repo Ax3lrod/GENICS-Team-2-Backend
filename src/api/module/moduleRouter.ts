@@ -5,6 +5,7 @@ import { z } from "zod";
 
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 
+import { authenticateJwt } from "@/common/middleware/authenticateJwt";
 import { moduleController } from "./moduleController";
 import { DetailedModuleSchema, ModuleSchema } from "./moduleModel";
 
@@ -37,5 +38,57 @@ moduleRegistry.registerPath({
   ],
 });
 
+moduleRegistry.registerPath({
+  method: "post",
+  path: "/api/modules/{id}/upvote",
+  tags: ["Module"],
+  summary: "Upvote a module",
+  description: "Allows a user to upvote a specific module by its ID. Requires JWT authorization.",
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+      },
+      description: "The ID of the module to upvote",
+    },
+  ],
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  responses: createApiResponse(z.object({}), "Success"),
+});
+
+moduleRegistry.registerPath({
+  method: "post",
+  path: "/api/modules/{id}/downvotes",
+  tags: ["Module"],
+  summary: "Upvote a module",
+  description: "Allows a user to downvote a specific module by its ID. Requires JWT authorization.",
+  parameters: [
+    {
+      name: "id",
+      in: "path",
+      required: true,
+      schema: {
+        type: "string",
+      },
+      description: "The ID of the module to upvote",
+    },
+  ],
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  responses: createApiResponse(z.object({}), "Success"),
+});
+
 moduleRouter.get("/", moduleController.getModules);
 moduleRouter.get("/:id", moduleController.getModuleById);
+moduleRouter.post("/:id/upvotes", authenticateJwt, moduleController.postUpvoteModuleById);
+moduleRouter.post("/:id/downvotes", authenticateJwt, moduleController.postDownvoteModuleById);

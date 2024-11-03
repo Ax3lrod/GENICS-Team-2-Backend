@@ -10,7 +10,7 @@ export class UserService {
     this.userRepository = repository;
   }
 
-  async findAll(){
+  async findAll() {
     try {
       const users = await this.userRepository.findAllAsync();
       if (!users || users.length === 0) {
@@ -21,7 +21,7 @@ export class UserService {
       return ServiceResponse.failure(
         "An error occurred while retrieving users",
         null,
-        StatusCodes.INTERNAL_SERVER_ERROR
+        StatusCodes.INTERNAL_SERVER_ERROR,
       );
     }
   }
@@ -37,7 +37,7 @@ export class UserService {
       return ServiceResponse.failure(
         "An error occurred while retrieving the user",
         null,
-        StatusCodes.INTERNAL_SERVER_ERROR
+        StatusCodes.INTERNAL_SERVER_ERROR,
       );
     }
   }

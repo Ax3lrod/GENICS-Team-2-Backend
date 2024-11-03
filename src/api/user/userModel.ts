@@ -14,7 +14,7 @@ export type User = {
   password: string;
   uploadedModules?: {
     id: string;
-    title: string
+    title: string;
   }[];
   votes?: {
     id: string;
@@ -22,7 +22,7 @@ export type User = {
     module: {
       id: string;
       title: string;
-    }
+    };
   }[];
 };
 
@@ -33,22 +33,30 @@ export const UserSchema = z.object({
   faculty: z.string(),
   major: z.string(),
   password: z.string(),
-  uploadedModules: z.array(z.object({
-    id: z.string(),
-    title: z.string(),
-  })).optional(),
-  votes: z.array(z.object({
-    id: z.string(),
-    voteType: z.string(),
-    module: z.object({
-      id: z.string(),
-      title: z.string(),
-    }),
-  })).optional(),
+  uploadedModules: z
+    .array(
+      z.object({
+        id: z.string(),
+        title: z.string(),
+      }),
+    )
+    .optional(),
+  votes: z
+    .array(
+      z.object({
+        id: z.string(),
+        voteType: z.string(),
+        module: z.object({
+          id: z.string(),
+          title: z.string(),
+        }),
+      }),
+    )
+    .optional(),
 });
 
 export const GetUserSchema = z.object({
   params: z.object({
-    id: commonValidations.id
+    id: commonValidations.id,
   }),
 });

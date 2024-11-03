@@ -1,4 +1,5 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { env } from "@/config/env";
 import { StatusCodes } from "http-status-codes";
 import nodemailer from "nodemailer";
 
@@ -7,12 +8,12 @@ export class EmailService {
 
   constructor() {
     this.transporter = nodemailer.createTransport({
-      host: process.env.SMTP_HOST,
-      port: Number(process.env.SMTP_PORT),
+      host: env.SMTP_HOST,
+      port: Number(env.SMTP_PORT),
       secure: false,
       auth: {
-        user: process.env.SMTP_USER,
-        pass: process.env.SMTP_PASS,
+        user: env.SMTP_USER,
+        pass: env.SMTP_PASS,
       },
     });
   }
@@ -20,7 +21,7 @@ export class EmailService {
   async sendPasswordResetEmail(to: string, message: string) {
     try {
       const mailOptions = {
-        from: process.env.SMTP_USER,
+        from: env.SMTP_USER,
         to,
         subject: "Password Reset Request",
         text: message,
