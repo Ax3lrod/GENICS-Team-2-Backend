@@ -5,26 +5,26 @@ async function main() {
     {
       title: "Introduction to Programming",
       description: "Learn the basics of programming with this introductory module.",
-      upvotes: 10,
-      downvotes: 2,
+      upvoteCount: 10,
+      downvoteCount: 2,
     },
     {
       title: "Web Development Fundamentals",
       description: "Explore the core concepts of web development, including HTML, CSS, and JavaScript.",
-      upvotes: 15,
-      downvotes: 1,
+      upvoteCount: 15,
+      downvoteCount: 1,
     },
     {
       title: "Data Structures and Algorithms",
       description: "Dive deep into essential data structures and algorithms used in computer science.",
-      upvotes: 20,
-      downvotes: 3,
+      upvoteCount: 20,
+      downvoteCount: 3,
     },
     {
       title: "Machine Learning Basics",
       description: "Get started with machine learning concepts and techniques.",
-      upvotes: 18,
-      downvotes: 2,
+      upvoteCount: 18,
+      downvoteCount: 2,
     },
   ];
 

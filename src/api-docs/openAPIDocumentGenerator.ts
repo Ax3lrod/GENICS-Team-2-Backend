@@ -6,6 +6,7 @@ import { authRegistry } from "@/api/auth/authRouter";
 import { lecturerRegistry } from "@/api/lecturer/lecturerRouter";
 import { moduleRegistry } from "@/api/module/moduleRouter";
 import { userRegistry } from "@/api/user/userRouter";
+import { commentRegistry } from "@/api/comments/commentRouter";
 
 export function generateOpenAPIDocument() {
   // jangan lupa tambahkan registy
@@ -15,6 +16,7 @@ export function generateOpenAPIDocument() {
     moduleRegistry,
     userRegistry,
     authRegistry,
+    commentRegistry,
   ]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
