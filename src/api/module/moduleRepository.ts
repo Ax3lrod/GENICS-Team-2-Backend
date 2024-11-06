@@ -1,19 +1,19 @@
 import prisma from "@/config/prisma";
-import { type ModuleVoteRecord, VoteType } from "@prisma/client";
+import { type ModuleVoteRecords, VoteType } from "@prisma/client";
 import type { DetailedModule, Module } from "./moduleModel";
 
 export class ModuleRepository {
   async findAllAsync(): Promise<Module[]> {
-    return prisma.module.findMany({
+    return prisma.modules.findMany({
       select: {
         id: true,
         title: true,
         description: true,
-        upvoteCount: true,
-        downvoteCount: true,
+        upVote: true,
+        downVote: true,
         createdAt: true,
         updatedAt: true,
-        User: {
+        user: {
           select: {
             username: true,
           },
@@ -23,17 +23,17 @@ export class ModuleRepository {
   }
 
   async findByIdAsync(id: string): Promise<DetailedModule | null> {
-    return prisma.module.findUnique({
+    return prisma.modules.findUnique({
       where: { id },
       select: {
         id: true,
         title: true,
         description: true,
-        upvoteCount: true,
-        downvoteCount: true,
+        upVote: true,
+        downVote: true,
         createdAt: true,
         updatedAt: true,
-        User: {
+        user: {
           select: {
             username: true,
           },
@@ -42,8 +42,8 @@ export class ModuleRepository {
     });
   }
 
-  async getVoteByUserIdAndModuleId(userId: string, moduleId: string): Promise<ModuleVoteRecord | null> {
-    return prisma.moduleVoteRecord.findUnique({
+  async getVoteByUserIdAndModuleId(userId: string, moduleId: string): Promise<ModuleVoteRecords | null> {
+    return prisma.moduleVoteRecords.findUnique({
       where: {
         userId_moduleId: {
           userId,
@@ -53,8 +53,8 @@ export class ModuleRepository {
     });
   }
 
-  async addVote(userId: string, moduleId: string): Promise<ModuleVoteRecord> {
-    const vote = await prisma.moduleVoteRecord.create({
+  async addVote(userId: string, moduleId: string): Promise<ModuleVoteRecords> {
+    const vote = await prisma.moduleVoteRecords.create({
       data: {
         userId,
         moduleId,
@@ -62,12 +62,12 @@ export class ModuleRepository {
       },
     });
 
-    await prisma.module.update({
+    await prisma.modules.update({
       where: {
         id: moduleId,
       },
       data: {
-        upvoteCount: {
+        upVote: {
           increment: 1,
         },
       },
@@ -76,8 +76,8 @@ export class ModuleRepository {
     return vote;
   }
 
-  async deleteVote(userId: string, moduleId: string): Promise<ModuleVoteRecord | null> {
-    const vote = await prisma.moduleVoteRecord.delete({
+  async deleteVote(userId: string, moduleId: string): Promise<ModuleVoteRecords | null> {
+    const vote = await prisma.moduleVoteRecords.delete({
       where: {
         userId_moduleId: {
           userId,
@@ -86,12 +86,12 @@ export class ModuleRepository {
       },
     });
 
-    await prisma.module.update({
+    await prisma.modules.update({
       where: {
         id: moduleId,
       },
       data: {
-        upvoteCount: {
+        upVote: {
           decrement: 1,
         },
       },

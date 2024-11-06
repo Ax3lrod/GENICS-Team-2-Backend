@@ -12,74 +12,69 @@ enum VoteType {
   DOWNVOTE
 }
 
-model User {
-  id                    String   @id @default(uuid())
-  username              String   @unique
-  email                 String   @unique
-  faculty               String
-  major                 String
-  password              String
-  passwordResetToken    String?
-  passwordResetExpires  DateTime?
-  uploadedModules       Module[]
-  votes                 ModuleVoteRecord[]
-  comments              Comments[] 
-  createdAt             DateTime @default(now())
-  updatedAt             DateTime @updatedAt
+model Users {
+  id                   String              @id @default(uuid())
+  username             String              @unique
+  email                String              @unique
+  faculty              String
+  major                String
+  password             String
+  passwordResetToken   String?
+  passwordResetExpires DateTime?
+  uploadedModules      Modules[]
+  votes                ModuleVoteRecords[]
+  comments             Comments[]
+  createdAt            DateTime            @default(now())
+  updatedAt            DateTime            @updatedAt
 }
 
-model ModuleVoteRecord {
+model ModuleVoteRecords {
   id       String   @id @default(uuid())
   voteType VoteType
   userId   String
   moduleId String
-
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-  module   Module   @relation(fields: [moduleId], references: [id], onDelete: Cascade)
+  user     Users    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  module   Modules  @relation(fields: [moduleId], references: [id], onDelete: Cascade)
 
   @@unique([userId, moduleId])
 }
 
-model Module {
-  id                String   @id @default(uuid())
-  title             String
-  description       String
-  upvoteCount       Int      @default(0)
-  downvoteCount     Int      @default(0)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @updatedAt
-  userId            String?
-  votes             ModuleVoteRecord[]
-  comments          Comments[] 
-
-  User              User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+model Modules {
+  id          String              @id @default(uuid())
+  title       String
+  description String
+  upVote      Int                 @default(0)
+  downVote    Int                 @default(0)
+  userId      String?
+  votes       ModuleVoteRecords[]
+  comments    Comments[]
+  user        Users?              @relation(fields: [userId], references: [id], onDelete: Cascade)
+  createdAt   DateTime            @default(now())
+  updatedAt   DateTime            @updatedAt
 }
 
-model Lecturer {
-  id         String   @id @default(uuid()) 
+model Lecturers {
+  id         String     @id @default(uuid())
   name       String
   faculty    String
   department String
-  upvotes    Int      @default(0)
-  downvotes  Int      @default(0)
-  comments   Comments[] 
-  createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  upVote     Int        @default(0)
+  downVote   Int        @default(0)
+  comments   Comments[]
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
 
 model Comments {
-  id           String     @id @default(uuid())
-  feedback     String
-  rating       Int        
-  createdAt    DateTime   @default(now())
-  updatedAt    DateTime   @updatedAt
-  user         User      @relation(fields: [userId], references: [id])
-  userId       String
-  module       Module?   @relation(fields: [moduleId], references: [id])
-  moduleId     String?
-  lecturer     Lecturer? @relation(fields: [lecturerId], references: [id])
-  lecturerId   String?
-
+  id         String     @id @default(uuid())
+  feedback   String
+  rating     Int
+  userId     String
+  moduleId   String?
+  lecturerId String?
+  user       Users      @relation(fields: [userId], references: [id])
+  module     Modules?   @relation(fields: [moduleId], references: [id])
+  lecturer   Lecturers? @relation(fields: [lecturerId], references: [id])
+  createdAt  DateTime   @default(now())
+  updatedAt  DateTime   @updatedAt
 }
-
-

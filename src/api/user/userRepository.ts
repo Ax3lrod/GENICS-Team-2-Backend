@@ -4,7 +4,7 @@ import type { User } from "./userModel";
 
 export class UserRepository {
   async createUser(username: string, email: string, faculty: string, major: string, password: string) {
-    return await prisma.user.create({
+    return await prisma.users.create({
       data: {
         username,
         email,
@@ -16,7 +16,7 @@ export class UserRepository {
   }
 
   async findAllAsync() {
-    return await prisma.user.findMany({
+    return await prisma.users.findMany({
       select: {
         id: true,
         username: true,
@@ -28,7 +28,7 @@ export class UserRepository {
   }
 
   async findByIdAsync(id: string) {
-    return await prisma.user.findUnique({
+    return await prisma.users.findUnique({
       where: { id },
       select: {
         id: true,
@@ -59,7 +59,7 @@ export class UserRepository {
   }
 
   async findByUsername(username: string) {
-    return await prisma.user.findUnique({
+    return await prisma.users.findUnique({
       where: { username },
       select: {
         id: true,
@@ -91,7 +91,7 @@ export class UserRepository {
   }
 
   async findByEmail(email: string) {
-    return await prisma.user.findUnique({
+    return await prisma.users.findUnique({
       where: { email },
       select: {
         id: true,
@@ -123,7 +123,7 @@ export class UserRepository {
   }
 
   async savePasswordResetToken(id: string, token: string) {
-    return await prisma.user.update({
+    return await prisma.users.update({
       where: { id: id },
       data: {
         passwordResetToken: token,
@@ -133,7 +133,7 @@ export class UserRepository {
   }
 
   async findByIdAndToken(id: string, token: string) {
-    const user = await prisma.user.findUnique({
+    const user = await prisma.users.findUnique({
       where: { id: id },
       select: {
         id: true,
@@ -154,7 +154,7 @@ export class UserRepository {
 
   async resetPassword(id: string, newPassword: string) {
     const hashedPassword = await bcrypt.hash(newPassword, 10);
-    return prisma.user.update({
+    return prisma.users.update({
       where: { id: id },
       data: { password: hashedPassword, passwordResetToken: null, passwordResetExpires: null },
     });

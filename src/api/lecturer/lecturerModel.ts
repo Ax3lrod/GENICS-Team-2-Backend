@@ -9,8 +9,8 @@ export type Lecturer = {
   name: string;
   faculty: string;
   department: string;
-  upvotes: number;
-  downvotes: number;
+  upVote: number;
+  downVote: number;
 };
 
 export const LecturerSchema = z.object({
@@ -18,8 +18,8 @@ export const LecturerSchema = z.object({
   name: z.string(),
   faculty: z.string(),
   department: z.string(),
-  upvotes: z.number(),
-  downvotes: z.number(),
+  upVote: z.number(),
+  downVote: z.number(),
 });
 
 export const GetLecturerSchema = z.object({
