@@ -1,9 +1,9 @@
-import { Request, Response, RequestHandler } from "express";
-import { validateRequest } from "@/common/utils/httpHandlers";
-import { commentService } from "./commentService";
-import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { validateRequest } from "@/common/utils/httpHandlers";
+import { handleServiceResponse } from "@/common/utils/httpHandlers";
+import type { Request, RequestHandler, Response } from "express";
 import { StatusCodes } from "http-status-codes";
+import { commentService } from "./commentService";
 // import { CreateCommentSchema, GetCommentSchema } from "./commentModel";
 
 class CommentController {
@@ -21,15 +21,15 @@ class CommentController {
     handleServiceResponse(serviceResponse, res);
   };
 
-  public createComment: RequestHandler = async (req: Request, res: Response) => {
+  public createComment: RequestHandler = async (req: any, res: Response) => {
     if (req.user === null || req.user === undefined || !req.user.id) {
-        const response = ServiceResponse.failure("Unauthorized user", StatusCodes.UNAUTHORIZED);
-        handleServiceResponse(response, res);
-        return;
-      }
+      const response = ServiceResponse.failure("Unauthorized user", StatusCodes.UNAUTHORIZED);
+      handleServiceResponse(response, res);
+      return;
+    }
 
     const { moduleId, lecturerId, feedback, rating } = req.body;
-    const userId = req.user.id; 
+    const userId = req.user.id;
 
     const serviceResponse = await commentService.createComment({
       userId,
@@ -51,4 +51,3 @@ class CommentController {
 }
 
 export const commentController = new CommentController();
-
