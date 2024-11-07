@@ -42,7 +42,11 @@ model ModuleVoteRecords {
 model Modules {
   id          String              @id @default(uuid())
   title       String
+  faculty     String
+  major       String
+  course      String
   description String
+  fileUrl     String
   upVote      Int                 @default(0)
   downVote    Int                 @default(0)
   userId      String?

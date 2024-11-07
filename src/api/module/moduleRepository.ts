@@ -8,6 +8,9 @@ export class ModuleRepository {
       select: {
         id: true,
         title: true,
+        faculty: true,
+        major: true,
+        course: true,
         description: true,
         upVote: true,
         downVote: true,
@@ -28,6 +31,9 @@ export class ModuleRepository {
       select: {
         id: true,
         title: true,
+        faculty: true,
+        major: true,
+        course: true,
         description: true,
         upVote: true,
         downVote: true,

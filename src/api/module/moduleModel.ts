@@ -7,6 +7,9 @@ extendZodWithOpenApi(z);
 export type Module = {
   id: string;
   title: string;
+  faculty: string;
+  major: string;
+  course: string;
   description: string;
   upVote: number;
   downVote: number;
@@ -17,6 +20,9 @@ export type Module = {
 export type DetailedModule = {
   id: string;
   title: string;
+  faculty: string;
+  major: string;
+  course: string;
   description: string;
   upVote: number;
   downVote: number;
@@ -30,6 +36,9 @@ export type DetailedModule = {
 export const ModuleSchema = z.object({
   id: z.string(),
   title: z.string(),
+  faculty: z.string(),
+  major: z.string(),
+  course: z.string(),
   description: z.string(),
   upVote: z.number(),
   downVote: z.number(),
@@ -38,6 +47,9 @@ export const ModuleSchema = z.object({
 export const DetailedModuleSchema = z.object({
   id: z.string(),
   title: z.string(),
+  faculty: z.string(),
+  major: z.string(),
+  course: z.string(),
   description: z.string(),
   upVote: z.number(),
   downVote: z.number(),
