@@ -7,6 +7,7 @@ import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid-cjs";
 import type { User } from "../user/userModel";
 import { UserRepository } from "../user/userRepository";
+import { LoginResponseSchema, RegisterResponseSchema } from "./authModel";
 import { EmailService } from "./emailService";
 
 export class AuthService {
@@ -43,7 +44,9 @@ export class AuthService {
         hashedPassword,
       );
 
-      return ServiceResponse.success("User registered successfully", newUser);
+      const userToResponse = RegisterResponseSchema.parse(newUser);
+
+      return ServiceResponse.success("User registered successfully", userToResponse, StatusCodes.CREATED);
     } catch (error: any) {
       return ServiceResponse.failure(
         `Registration failed: ${error.message || "Unknown error"}`,
@@ -72,9 +75,9 @@ export class AuthService {
         email: user.email,
       });
 
-      const { password: _, ...userWithoutPassword } = user;
+      const userToResponse = LoginResponseSchema.parse(user);
       return ServiceResponse.success("Login successful", {
-        user: userWithoutPassword,
+        user: userToResponse,
         token,
       });
     } catch (error) {

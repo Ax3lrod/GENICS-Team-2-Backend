@@ -13,6 +13,7 @@ export class LecturerRepository {
         department: true,
         upVote: true,
         downVote: true,
+        rating: true,
       },
     });
   }
@@ -27,6 +28,9 @@ export class LecturerRepository {
         department: true,
         upVote: true,
         downVote: true,
+        rating: true,
+        createdAt: true,
+        updatedAt: true,
       },
     });
   }
