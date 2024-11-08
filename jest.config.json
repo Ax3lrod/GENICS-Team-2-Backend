@@ -1,0 +1,11 @@
+{
+  "transform": {
+    "^.+\\.[t|j]sx?$": "babel-jest"
+  },
+  "preset": "ts-jest",
+  "testEnvironment": "node",
+  "moduleNameMapper": {
+    "^@/(.*)$": "<rootDir>/src/$1"
+  },
+  "testTimeout": 20000
+}

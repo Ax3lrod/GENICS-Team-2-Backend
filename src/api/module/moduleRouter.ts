@@ -40,7 +40,7 @@ moduleRegistry.registerPath({
 
 moduleRegistry.registerPath({
   method: "post",
-  path: "/api/modules/{id}/upvote",
+  path: "/api/modules/{id}/upvotes",
   tags: ["Module"],
   summary: "Upvote a module",
   description: "Allows a user to upvote a specific module by its ID. Requires JWT authorization.",

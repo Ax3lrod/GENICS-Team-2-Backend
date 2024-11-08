@@ -1,16 +1,13 @@
 import prisma from "@/config/prisma";
 import { type ModuleVoteRecords, VoteType } from "@prisma/client";
-import type { DetailedModule, Module } from "./moduleModel";
+import type { DetailedModule, ShortModule } from "./moduleModel";
 
 export class ModuleRepository {
-  async findAllAsync(): Promise<Module[]> {
+  async findAllAsync(): Promise<ShortModule[]> {
     return prisma.modules.findMany({
       select: {
         id: true,
         title: true,
-        faculty: true,
-        major: true,
-        course: true,
         description: true,
         upVote: true,
         downVote: true,
@@ -31,9 +28,6 @@ export class ModuleRepository {
       select: {
         id: true,
         title: true,
-        faculty: true,
-        major: true,
-        course: true,
         description: true,
         upVote: true,
         downVote: true,
@@ -42,6 +36,18 @@ export class ModuleRepository {
         user: {
           select: {
             username: true,
+          },
+        },
+        votes: {
+          select: {
+            id: true,
+            voteType: true,
+            user: {
+              select: {
+                id: true,
+                username: true,
+              },
+            },
           },
         },
       },
@@ -59,25 +65,38 @@ export class ModuleRepository {
     });
   }
 
-  async addVote(userId: string, moduleId: string): Promise<ModuleVoteRecords> {
+  async addVote(userId: string, moduleId: string, voteType: VoteType): Promise<ModuleVoteRecords> {
     const vote = await prisma.moduleVoteRecords.create({
       data: {
         userId,
         moduleId,
-        voteType: VoteType.UPVOTE,
+        voteType: voteType,
       },
     });
 
-    await prisma.modules.update({
-      where: {
-        id: moduleId,
-      },
-      data: {
-        upVote: {
-          increment: 1,
+    if (voteType === VoteType.UPVOTE) {
+      await prisma.modules.update({
+        where: {
+          id: moduleId,
         },
-      },
-    });
+        data: {
+          upVote: {
+            increment: 1,
+          },
+        },
+      });
+    } else {
+      await prisma.modules.update({
+        where: {
+          id: moduleId,
+        },
+        data: {
+          downVote: {
+            increment: 1,
+          },
+        },
+      });
+    }
 
     return vote;
   }
@@ -92,16 +111,29 @@ export class ModuleRepository {
       },
     });
 
-    await prisma.modules.update({
-      where: {
-        id: moduleId,
-      },
-      data: {
-        upVote: {
-          decrement: 1,
+    if (vote.voteType === VoteType.UPVOTE) {
+      await prisma.modules.update({
+        where: {
+          id: moduleId,
         },
-      },
-    });
+        data: {
+          upVote: {
+            decrement: 1,
+          },
+        },
+      });
+    } else {
+      await prisma.modules.update({
+        where: {
+          id: moduleId,
+        },
+        data: {
+          downVote: {
+            decrement: 1,
+          },
+        },
+      });
+    }
 
     return vote;
   }

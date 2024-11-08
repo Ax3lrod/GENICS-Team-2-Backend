@@ -1,5 +1,6 @@
 import { commonValidations } from "@/common/utils/commonValidation";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
+import type { VoteType } from "@prisma/client";
 import { z } from "zod";
 
 extendZodWithOpenApi(z);
@@ -7,12 +8,9 @@ extendZodWithOpenApi(z);
 export type Module = {
   id: string;
   title: string;
-  faculty: string;
-  major: string;
-  course: string;
   description: string;
-  upVote: number;
-  downVote: number;
+  upvoteCount: number;
+  downvoteCount: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -20,9 +18,28 @@ export type Module = {
 export type DetailedModule = {
   id: string;
   title: string;
-  faculty: string;
-  major: string;
-  course: string;
+  description: string;
+  upVote: number;
+  downVote: number;
+  createdAt: Date;
+  updatedAt: Date;
+  voteStatus?: VoteType;
+  user?: {
+    username: string;
+  } | null;
+  votes?: {
+    id: string;
+    voteType: VoteType;
+    user: {
+      id: string;
+      username: string;
+    };
+  }[];
+};
+
+export type ShortModule = {
+  id: string;
+  title: string;
   description: string;
   upVote: number;
   downVote: number;
@@ -36,35 +53,53 @@ export type DetailedModule = {
 export const ModuleSchema = z.object({
   id: z.string(),
   title: z.string(),
-  faculty: z.string(),
-  major: z.string(),
-  course: z.string(),
   description: z.string(),
-  upVote: z.number(),
-  downVote: z.number(),
+  upvoteCount: z.number(),
+  downvoteCount: z.number(),
 });
 
-export const DetailedModuleSchema = z.object({
-  id: z.string(),
-  title: z.string(),
-  faculty: z.string(),
-  major: z.string(),
-  course: z.string(),
-  description: z.string(),
-  upVote: z.number(),
-  downVote: z.number(),
-  createdAt: z.date(),
-  updatedAt: z.date(),
-  user: z
-    .object({
-      username: z.string(),
-    })
-    .nullable()
-    .optional(),
-});
+export const ShortModuleSchema = z
+  .object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    upVote: z.number(),
+    downVote: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    user: z
+      .object({
+        username: z.string(),
+      })
+      .nullable()
+      .optional(),
+  })
+  .strip();
 
-export const GetModuleSchema = z.object({
-  params: z.object({
-    id: commonValidations.id,
-  }),
-});
+export const DetailedModuleSchema = z
+  .object({
+    id: z.string(),
+    title: z.string(),
+    description: z.string(),
+    upVote: z.number(),
+    downVote: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+    user: z
+      .object({
+        username: z.string(),
+      })
+      .nullable()
+      .optional(),
+    votes: z.array(
+      z.object({
+        id: z.string(),
+        voteType: z.enum(["UPVOTE", "DOWNVOTE"]),
+        user: z.object({
+          id: z.string(),
+          username: z.string(),
+        }),
+      }),
+    ),
+  })
+  .strip();

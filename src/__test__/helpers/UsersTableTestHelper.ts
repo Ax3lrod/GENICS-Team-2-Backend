@@ -1,35 +1,40 @@
+/* istanbul ignore file */
 import prisma from "@/config/prisma";
+import bcrypt from "bcrypt";
 
 export const UsersTableTestHelper = {
   async insertUser({
-    id = "user-123",
-    username = "genics",
-    email = "genics@example.com",
+    username = `user-${Date.now()}`,
+    email = `${Date.now()}@example.com`,
     faculty = "Computer Science",
     major = "Software Engineering",
     password = "password",
   }) {
-    return await prisma.user.create({
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+
+    const user = await prisma.users.create({
       data: {
-        id,
         username,
         email,
         faculty,
         major,
-        password,
+        password: hashedPassword,
       },
     });
+
+    return user;
   },
 
   async cleanTable() {
-    await prisma.user.deleteMany({});
+    await prisma.users.deleteMany({});
   },
 
   async findUserById(id: string) {
-    return await prisma.user.findUnique({ where: { id } });
+    return await prisma.users.findUnique({ where: { id } });
   },
 
   async findAllUsers() {
-    return await prisma.user.findMany();
+    return await prisma.users.findMany();
   },
 };
