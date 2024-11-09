@@ -8,7 +8,8 @@ describe("Error Handler Middleware", () => {
   let app: Express;
 
   beforeAll(() => {
-    jest.spyOn(console, "error").mockImplementation(() => {});
+    console.error = jest.fn();
+    console.log = jest.fn();
 
     app = express();
 
@@ -25,8 +26,6 @@ describe("Error Handler Middleware", () => {
   });
 
   afterAll(() => {
-    server.close();
-
     jest.restoreAllMocks();
   });
 
