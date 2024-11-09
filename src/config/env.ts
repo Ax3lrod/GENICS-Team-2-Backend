@@ -3,7 +3,9 @@ import { EnvError, cleanEnv, email, json, makeValidator, port, str } from "enval
 
 const dbUrl = makeValidator<string>((url: string) => {
   if (process.env.NODE_ENV !== "production" && url.includes("calm-pine")) {
-    throw new EnvError("Production database detected, use a development/test database URL!");
+    throw new EnvError(
+      "Production database URL in non-production environment detected, use a development/test database URL!",
+    );
   }
 
   return url;
