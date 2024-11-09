@@ -10,7 +10,7 @@
   "scripts": {
     "dev": "tsx watch --clear-screen=false src/index.ts | pino-pretty",
     "build": "tsup",
-    "start": "ts-node -r tsconfig-paths/register src/index.ts",
+    "start": "ts-node --files -r tsconfig-paths/register src/index.ts",
     "clean": "rimraf dist coverage",
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
@@ -21,7 +21,7 @@
     "prisma:generate": "prisma generate",
     "prisma:migrate": "prisma migrate dev",
     "prisma:studio": "prisma studio",
-    "prisma:seed": "npx ts-node -r tsconfig-paths/register prisma/seed.ts"
+    "prisma:seed": "npx ts-node --files -r tsconfig-paths/register prisma/seed.ts"
   },
   "dependencies": {
     "@asteasolutions/zod-to-openapi": "^7.2.0",
