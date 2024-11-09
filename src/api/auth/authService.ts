@@ -1,7 +1,7 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { hashManager } from "@/common/utils/hashManager";
 import { tokenManager } from "@/common/utils/tokenManager";
 import { env } from "@/config/env";
-import bcrypt from "bcrypt";
 import { StatusCodes } from "http-status-codes";
 import jwt from "jsonwebtoken";
 import { nanoid } from "nanoid-cjs";
@@ -33,8 +33,7 @@ export class AuthService {
         return ServiceResponse.failure("Email already exists", null, StatusCodes.CONFLICT);
       }
 
-      const salt = await bcrypt.genSalt(10);
-      const hashedPassword = await bcrypt.hash(req.password, salt);
+      const hashedPassword = await hashManager.hash(req.password);
 
       const newUser = await this.userRepository.createUser(
         req.username,
@@ -64,7 +63,7 @@ export class AuthService {
       }
 
       // Verify password
-      const isPasswordValid = await bcrypt.compare(password, user.password);
+      const isPasswordValid = await hashManager.compare(password, user.password);
       if (!isPasswordValid) {
         return ServiceResponse.failure("Invalid username or password", null, StatusCodes.UNAUTHORIZED);
       }
@@ -92,8 +91,7 @@ export class AuthService {
       }
 
       const resetToken = nanoid(32);
-      const salt = await bcrypt.genSalt(10);
-      const hashedToken = await bcrypt.hash(resetToken, salt);
+      const hashedToken = await hashManager.hash(resetToken);
 
       await this.userRepository.savePasswordResetToken(user.id, hashedToken);
 

@@ -13,7 +13,13 @@ export class CommentRepository {
     });
   }
 
-  async createComment(data: { userId: string; moduleId?: string; lecturerId?: string; feedback: string; rating: number }) {
+  async createComment(data: {
+    userId: string;
+    moduleId?: string;
+    lecturerId?: string;
+    feedback: string;
+    rating: number;
+  }) {
     return prisma.comments.create({
       data,
     });
