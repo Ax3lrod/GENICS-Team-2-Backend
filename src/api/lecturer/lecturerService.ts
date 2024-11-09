@@ -1,6 +1,6 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { StatusCodes } from "http-status-codes";
-import type { Lecturer } from "./lecturerModel";
+import { DetailedLecturerSchema, type Lecturer, ShortLecturerSchema } from "./lecturerModel";
 import { LecturerRepository } from "./lecturerRepository";
 
 export class LecturerService {
@@ -16,8 +16,11 @@ export class LecturerService {
       if (!lecturers || lecturers.length === 0) {
         return ServiceResponse.failure("No lecturers found", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success("Lecturers found", lecturers);
+
+      const lecturersToResponse = lecturers.map((lecturer) => ShortLecturerSchema.parse(lecturer));
+      return ServiceResponse.success("Lecturers found", lecturersToResponse);
     } catch (error) {
+      console.log("🚀 ~ LecturerService ~ findAll ~ error:", error);
       return ServiceResponse.failure(
         "An error occurred while retrieving lecturers",
         null,
@@ -32,8 +35,11 @@ export class LecturerService {
       if (!lecturer) {
         return ServiceResponse.failure("Lecturer not found", null, StatusCodes.NOT_FOUND);
       }
-      return ServiceResponse.success<Lecturer>("Lecturer found", lecturer);
+
+      const lecturerToResponse = DetailedLecturerSchema.parse(lecturer);
+      return ServiceResponse.success<Lecturer>("Lecturer found", lecturerToResponse);
     } catch (error) {
+      console.log("🚀 ~ LecturerService ~ findById ~ error:", error);
       return ServiceResponse.failure(
         "An error occurred while retrieving the lecturer.",
         null,

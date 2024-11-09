@@ -1,6 +1,6 @@
-import { CommentRepository } from "./commentRepository";
 import { ServiceResponse } from "@/common/models/serviceResponse";
 import { StatusCodes } from "http-status-codes";
+import { CommentRepository } from "./commentRepository";
 
 class CommentService {
   private commentRepository: CommentRepository;
@@ -21,14 +21,20 @@ class CommentService {
   async findByLecturerId(lecturerId: string) {
     try {
       const comments = await this.commentRepository.findByLecturerId(lecturerId);
-    //   console.log("on service: " + comments)
+      //   console.log("on service: " + comments)
       return ServiceResponse.success("Comments found", comments);
     } catch (error) {
       return ServiceResponse.failure("Error retrieving comments", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
 
-  async createComment(data: { userId: string; moduleId?: string; lecturerId?: string; feedback: string; rating: number }) {
+  async createComment(data: {
+    userId: string;
+    moduleId?: string;
+    lecturerId?: string;
+    feedback: string;
+    rating: number;
+  }) {
     try {
       const comment = await this.commentRepository.createComment(data);
       return ServiceResponse.success("Comment created", comment, StatusCodes.CREATED);

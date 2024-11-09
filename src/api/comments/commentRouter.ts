@@ -1,9 +1,9 @@
-import express, { type Router } from "express";
-import { authenticateJwt } from "@/common/middleware/authenticateJwt";
-import { commentController } from "./commentController";
-import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
-import { z } from "zod";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
+import { authenticateJwt } from "@/common/middleware/authenticateJwt";
+import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
+import express, { type Router } from "express";
+import { z } from "zod";
+import { commentController } from "./commentController";
 import { CommentSchema } from "./commentModel";
 
 export const commentRegistry = new OpenAPIRegistry();
@@ -16,9 +16,7 @@ commentRegistry.registerPath({
   path: "/api/comments/module/{moduleId}",
   tags: ["Comment"],
   summary: "Get comments for a module",
-  parameters: [
-    { name: "moduleId", in: "path", required: true, schema: { type: "string" } },
-  ],
+  parameters: [{ name: "moduleId", in: "path", required: true, schema: { type: "string" } }],
   responses: createApiResponse(z.array(CommentSchema), "Success"),
 });
 
@@ -27,9 +25,7 @@ commentRegistry.registerPath({
   path: "/api/comments/lecturer/{lecturerId}",
   tags: ["Comment"],
   summary: "Get comments for a lecturer",
-  parameters: [
-    { name: "lecturerId", in: "path", required: true, schema: { type: "string" } },
-  ],
+  parameters: [{ name: "lecturerId", in: "path", required: true, schema: { type: "string" } }],
   responses: createApiResponse(z.array(CommentSchema), "Success"),
 });
 
@@ -56,9 +52,7 @@ commentRegistry.registerPath({
   path: "/api/comments/{commentId}",
   tags: ["Comment"],
   summary: "Delete a comment",
-  parameters: [
-    { name: "commentId", in: "path", required: true, schema: { type: "string" } },
-  ],
+  parameters: [{ name: "commentId", in: "path", required: true, schema: { type: "string" } }],
   security: [{ bearerAuth: [] }],
   responses: createApiResponse(z.object({}), "Success"),
 });

@@ -1,11 +1,13 @@
 import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
 import type { User } from "../user/userModel";
+import { RegisterResponseSchema } from "./authModel";
 import { authService } from "./authService";
 
 class AuthController {
   public register: RequestHandler = async (req: Request, res: Response) => {
     const serviceResponse = await authService.register(req.body as User);
+
     handleServiceResponse(serviceResponse, res);
   };
 

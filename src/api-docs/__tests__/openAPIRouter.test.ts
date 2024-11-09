@@ -5,7 +5,7 @@ import { app } from "@/server";
 
 import { generateOpenAPIDocument } from "../openAPIDocumentGenerator";
 
-describe.skip("OpenAPI Router", () => {
+describe("OpenAPI Router", () => {
   describe("Swagger JSON route", () => {
     it("should return Swagger JSON content", async () => {
       // Arrange
@@ -22,7 +22,7 @@ describe.skip("OpenAPI Router", () => {
 
     it("should serve the Swagger UI", async () => {
       // Act
-      const response = await request(app).get("/");
+      const response = await request(app).get("/docs").redirects(1);
 
       // Assert
       expect(response.status).toBe(StatusCodes.OK);

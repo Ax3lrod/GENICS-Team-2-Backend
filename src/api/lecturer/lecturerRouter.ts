@@ -7,7 +7,7 @@ import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { validateRequest } from "@/common/utils/httpHandlers";
 
 import { lecturerController } from "./lecturerController";
-import { GetLecturerSchema, LecturerSchema } from "./lecturerModel";
+import { DetailedLecturerSchema, GetLecturerSchema, LecturerSchema, ShortLecturerSchema } from "./lecturerModel";
 
 export const lecturerRegistry = new OpenAPIRegistry();
 export const lecturerRouter: Router = express.Router();
@@ -18,7 +18,7 @@ lecturerRegistry.registerPath({
   method: "get",
   path: "/api/lecturers",
   tags: ["Lecturer"],
-  responses: createApiResponse(z.array(LecturerSchema), "Success"),
+  responses: createApiResponse(z.array(ShortLecturerSchema), "Success"),
 });
 
 lecturerRouter.get("/", lecturerController.getLecturers);
@@ -28,7 +28,7 @@ lecturerRegistry.registerPath({
   path: "/api/lecturers/{id}",
   tags: ["Lecturer"],
   request: { params: GetLecturerSchema.shape.params },
-  responses: createApiResponse(LecturerSchema, "Success"),
+  responses: createApiResponse(DetailedLecturerSchema, "Success"),
 });
 
 lecturerRouter.get("/:id", lecturerController.getLecturer);

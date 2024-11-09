@@ -3,10 +3,10 @@ import { OpenAPIRegistry, OpenApiGeneratorV3 } from "@asteasolutions/zod-to-open
 import { healthCheckRegistry } from "@/api/healthCheck/healthCheckRouter";
 
 import { authRegistry } from "@/api/auth/authRouter";
+import { commentRegistry } from "@/api/comments/commentRouter";
 import { lecturerRegistry } from "@/api/lecturer/lecturerRouter";
 import { moduleRegistry } from "@/api/module/moduleRouter";
 import { userRegistry } from "@/api/user/userRouter";
-import { commentRegistry } from "@/api/comments/commentRouter";
 
 export function generateOpenAPIDocument() {
   // jangan lupa tambahkan registy

@@ -46,7 +46,7 @@ app.use("/api/lecturers", lecturerRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/comments", commentRouter)
+app.use("/api/comments", commentRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

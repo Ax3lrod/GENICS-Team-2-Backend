@@ -1,14 +1,22 @@
 require("dotenv").config();
-import { cleanEnv, email, json, port, str } from "envalid";
+import { EnvError, cleanEnv, email, json, makeValidator, port, str } from "envalid";
+
+const dbUrl = makeValidator<string>((url: string) => {
+  if (process.env.NODE_ENV !== "production" && url.includes("calm-pine")) {
+    throw new EnvError("Production database detected, use a development/test database URL!");
+  }
+
+  return url;
+});
 
 export const env = cleanEnv(process.env, {
   NODE_ENV: str({ choices: ["development", "test", "production", "staging"] }),
   HOST: str({ default: "localhost" }),
   PORT: port({ default: 3000 }),
 
-  DATABASE_URL: str(),
+  DATABASE_URL: dbUrl(),
 
-  JWT_SECRET: str({ default: "d3a2b276f84e9809d39b772f33435ffa1bbf077dd4d8e15a448ec6990814d005" }),
+  JWT_SECRET: str(),
   JWT_EXPIRES_IN: str({ default: "24h" }),
 
   SMTP_HOST: str(),
