@@ -15,6 +15,7 @@
     "lint": "biome check src/",
     "lint:fix": "biome check src/ --fix",
     "format": "biome format src/",
+    "pretest": "ts-node src/__tests__/pretest.ts",
     "test": "jest --runInBand",
     "prepare": "husky",
     "prisma:generate": "prisma generate",

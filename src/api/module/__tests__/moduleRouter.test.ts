@@ -8,11 +8,11 @@ import { app } from "@/server";
 import { VoteType } from "@prisma/client";
 import type { Module } from "../moduleModel";
 
-import { DatabaseTestHelper } from "@/__test__/helpers/DatabaseTestHelper";
-import { LecturersTableTestHelper } from "@/__test__/helpers/LecturersTableTestHelper";
-import { ModuleVoteRecordsTableTestHelper } from "@/__test__/helpers/ModuleVoteRecordsTableTestHelper";
-import { ModulesTableTestHelper } from "@/__test__/helpers/ModulesTableTestHelper";
-import { UsersTableTestHelper } from "@/__test__/helpers/UsersTableTestHelper";
+import { DatabaseTestHelper } from "@/__tests__/helpers/DatabaseTestHelper";
+import { LecturersTableTestHelper } from "@/__tests__/helpers/LecturersTableTestHelper";
+import { ModuleVoteRecordsTableTestHelper } from "@/__tests__/helpers/ModuleVoteRecordsTableTestHelper";
+import { ModulesTableTestHelper } from "@/__tests__/helpers/ModulesTableTestHelper";
+import { UsersTableTestHelper } from "@/__tests__/helpers/UsersTableTestHelper";
 
 describe("Module API Endpoints", () => {
   beforeEach(async () => {
