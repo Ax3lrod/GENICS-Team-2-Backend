@@ -123,6 +123,27 @@ export class AuthService {
       );
     }
   }
+
+  async getAuthenticatedUser(token: any) {
+    try {
+      const decoded = tokenManager.verifyToken(token);
+      if (!decoded || !decoded.id) {
+        return ServiceResponse.failure("Invalid token", null, StatusCodes.UNAUTHORIZED);
+      }
+
+      const user = await this.userRepository.findByIdAsync(decoded.id);
+      if (!user) {
+        return ServiceResponse.failure("User not found", null, StatusCodes.NOT_FOUND);
+      }
+
+      const { password, ...userWithoutPassword } = user;
+      return ServiceResponse.success("User retrieved successfully", userWithoutPassword);
+    } catch (error) {
+      return ServiceResponse.failure("Failed to retrieve user", null, StatusCodes.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+
 }
 
 export const authService = new AuthService();

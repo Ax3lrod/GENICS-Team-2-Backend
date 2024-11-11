@@ -1,7 +1,9 @@
 import { handleServiceResponse } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
 import type { User } from "../user/userModel";
-import { authService } from "./authService";
+import { AuthService, authService } from "./authService";
+import { ServiceResponse } from "@/common/models/serviceResponse";
+import { StatusCodes } from "http-status-codes";
 
 class AuthController {
   public register: RequestHandler = async (req: Request, res: Response) => {
@@ -25,6 +27,13 @@ class AuthController {
     const serviceResponse = await authService.login(username, password);
     handleServiceResponse(serviceResponse, res);
   };
+
+  public me: RequestHandler = async (req: Request, res: Response) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    const serviceResponse = await authService.getAuthenticatedUser(token);
+    handleServiceResponse(serviceResponse, res);
+  };
+
 }
 
 export const authController = new AuthController();
