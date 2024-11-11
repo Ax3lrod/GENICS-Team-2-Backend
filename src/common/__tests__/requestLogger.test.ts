@@ -9,6 +9,8 @@ describe("Request Logger Middleware", () => {
   const app = express();
 
   beforeAll(() => {
+    jest.spyOn(console, "error").mockImplementation(() => {});
+
     app.use(requestLogger);
     app.get("/success", (req, res) => res.status(StatusCodes.OK).send("Success"));
     app.get("/redirect", (req, res) => res.redirect("/success"));

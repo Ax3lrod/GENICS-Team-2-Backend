@@ -9,8 +9,6 @@ export type Lecturer = {
   name: string;
   faculty: string;
   department: string;
-  upVote: number;
-  downVote: number;
 };
 
 export const LecturerSchema = z.object({
@@ -27,3 +25,25 @@ export const GetLecturerSchema = z.object({
     id: commonValidations.id,
   }),
 });
+
+export const ShortLecturerSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    faculty: z.string(),
+    department: z.string(),
+    rating: z.number(),
+  })
+  .strip();
+
+export const DetailedLecturerSchema = z
+  .object({
+    id: z.string(),
+    name: z.string(),
+    faculty: z.string(),
+    department: z.string(),
+    rating: z.number(),
+    createdAt: z.date(),
+    updatedAt: z.date(),
+  })
+  .strip();

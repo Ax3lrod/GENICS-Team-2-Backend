@@ -30,7 +30,7 @@ app.set("trust proxy", true);
 app.use(passport.initialize());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
+app.use(cors());
 app.use(helmet());
 // app.use(rateLimiter);
 
@@ -46,7 +46,7 @@ app.use("/api/lecturers", lecturerRouter);
 app.use("/api/modules", moduleRouter);
 app.use("/api/users", userRouter);
 app.use("/api/auth", authRouter);
-app.use("/api/comments", commentRouter)
+app.use("/api/comments", commentRouter);
 
 // Swagger UI
 app.use(openAPIRouter);

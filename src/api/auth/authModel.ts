@@ -25,3 +25,23 @@ export const LoginSchema = z.object({
   username: z.string().min(1, "Username is required"),
   password: z.string().min(1, "Password is required"),
 });
+
+export const RegisterResponseSchema = z
+  .object({
+    id: z.string(),
+    email: z.string(),
+    username: z.string(),
+    faculty: z.string(),
+    major: z.string(),
+  })
+  .strip();
+
+export const LoginResponseSchema = z
+  .object({
+    id: z.string(),
+    email: z.string(),
+    username: z.string(),
+    faculty: z.string(),
+    major: z.string(),
+  })
+  .strip();

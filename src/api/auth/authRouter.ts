@@ -7,7 +7,7 @@ import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { validateRequest } from "@/common/utils/httpHandlers";
 
 import { authController } from "./authController";
-import { LoginSchema, RegisterSchema } from "./authModel";
+import { LoginResponseSchema, LoginSchema, RegisterResponseSchema, RegisterSchema } from "./authModel";
 
 export const authRegistry = new OpenAPIRegistry();
 export const authRouter: Router = express.Router();
@@ -29,7 +29,7 @@ authRegistry.registerPath({
       },
     },
   },
-  responses: createApiResponse(RegisterSchema, "Success"),
+  responses: createApiResponse(RegisterResponseSchema, "Success"),
 });
 
 authRegistry.registerPath({
@@ -46,7 +46,7 @@ authRegistry.registerPath({
       },
     },
   },
-  responses: createApiResponse(LoginSchema, "Success"),
+  responses: createApiResponse(LoginResponseSchema, "Success"),
 });
 
 authRouter.post("/register", validateRequest(RegisterSchema), authController.register);

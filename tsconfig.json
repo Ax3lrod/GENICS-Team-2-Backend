@@ -13,9 +13,9 @@
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "types": ["vitest/globals"]
+    "typeRoots": ["./node_modules/@types", "src/common/types"]
   },
-  "include": ["src/**/*", "prisma/**/*", "src/common/types/express.d.ts"],
+  "include": ["src/**/*", "prisma/**/*", "src/common/types/**/*"],
   "exclude": ["node_modules"],
   "ts-node": {
     "require": ["tsconfig-paths/register"]
