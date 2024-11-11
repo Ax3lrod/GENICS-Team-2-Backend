@@ -27,6 +27,13 @@ class AuthController {
     const serviceResponse = await authService.login(username, password);
     handleServiceResponse(serviceResponse, res);
   };
+
+  public me: RequestHandler = async (req: Request, res: Response) => {
+    const token = req.headers.authorization?.split(" ")[1];
+    const serviceResponse = await authService.getAuthenticatedUser(token);
+    handleServiceResponse(serviceResponse, res);
+  };
+
 }
 
 export const authController = new AuthController();
