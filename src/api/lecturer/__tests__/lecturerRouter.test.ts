@@ -165,7 +165,6 @@ describe("Auth API Endpoints", () => {
     it("should return bad request error when no query sent", async () => {
       const response = await request(app).get("/api/lecturers/search");
       const responseBody: ServiceResponse = response.body;
-      console.log(response.body);
 
       expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
       expect(responseBody.success).toBeFalsy();

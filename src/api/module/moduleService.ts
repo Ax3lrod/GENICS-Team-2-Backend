@@ -93,6 +93,24 @@ export class ModuleService {
     }
   }
 
+  async findByQuery(query: string): Promise<ServiceResponse<ShortModule[] | null>> {
+    try {
+      const modules = await this.moduleRepository.findByQuery(query);
+      if (!modules || modules.length === 0) {
+        return ServiceResponse.failure("No modules found", null, StatusCodes.NOT_FOUND);
+      }
+
+      const modulesToResponse = modules.map((module) => ShortModuleSchema.parse(module));
+      return ServiceResponse.success("Modules found", modulesToResponse);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occured while retrieving modules",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
   private async getUpdatedModuleResponse(moduleId: string, message: string) {
     const updatedModule = await this.moduleRepository.findByIdAsync(moduleId);
     if (!updatedModule) {

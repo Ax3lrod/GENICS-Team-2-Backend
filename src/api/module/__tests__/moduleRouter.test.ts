@@ -562,5 +562,25 @@ describe("Module API Endpoints", () => {
       expect(responseBody.message).toContain("No modules found");
       expect(responseBody.responseObject).toBeNull();
     });
+
+    it("should return bad request error when query is empty string", async () => {
+      const response = await request(app).get("/api/modules/search?query=");
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toBeDefined();
+      expect(responseBody.responseObject).toBeNull();
+    });
+
+    it("should return bad request error when no query sent", async () => {
+      const response = await request(app).get("/api/modules/search");
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toBeDefined();
+      expect(responseBody.responseObject).toBeNull();
+    });
   });
 });
