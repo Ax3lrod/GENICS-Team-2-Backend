@@ -20,3 +20,15 @@ export const validateRequest = (schema: ZodSchema) => (req: Request, res: Respon
     handleServiceResponse(serviceResponse, res);
   }
 };
+
+export const validateRequestQuery = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
+  try {
+    schema.parse(req.query);
+    next();
+  } catch (err) {
+    const errorMessage = `Invalid input: ${(err as ZodError).errors.map((e) => e.message).join(", ")}`;
+    const statusCode = StatusCodes.BAD_REQUEST;
+    const serviceResponse = ServiceResponse.failure(errorMessage, null, statusCode);
+    handleServiceResponse(serviceResponse, res);
+  }
+};

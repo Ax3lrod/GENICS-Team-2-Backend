@@ -33,7 +33,6 @@ class AuthController {
     const serviceResponse = await authService.getAuthenticatedUser(token);
     handleServiceResponse(serviceResponse, res);
   };
-
 }
 
 export const authController = new AuthController();

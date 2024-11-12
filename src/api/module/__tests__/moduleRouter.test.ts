@@ -101,7 +101,7 @@ describe("Module API Endpoints", () => {
       });
     });
 
-    it("should return not found error when no modules", async () => {
+    it("should return not found error when no modules found", async () => {
       const response = await request(app).get("/api/modules");
 
       const responseBody = response.body;
@@ -435,6 +435,132 @@ describe("Module API Endpoints", () => {
           username: user.username,
         },
       });
+    });
+  });
+
+  describe("GET /api/modules/search", () => {
+    it("should return matched title of modules", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Basic programming",
+        description: "e-book of basic programming",
+      });
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Database system",
+        description: "e-book of database system",
+      });
+      const module2 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "AI: Introduction",
+        description: "presentation about artificial intelligence",
+      });
+
+      const response = await request(app).get("/api/modules/search?query=m");
+
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).toContain("Modules found");
+
+      expect(responseObject.length).toEqual(2);
+
+      expect(responseObject).toStrictEqual([
+        {
+          id: module0.id,
+          title: module0.title,
+          description: module0.description,
+          upVote: module0.upVote,
+          downVote: module0.downVote,
+          createdAt: module0.createdAt.toISOString(),
+          updatedAt: module0.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+        {
+          id: module1.id,
+          title: module1.title,
+          description: module1.description,
+          upVote: module1.upVote,
+          downVote: module1.downVote,
+          createdAt: module1.createdAt.toISOString(),
+          updatedAt: module1.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+      ]);
+    });
+
+    it("should return matched description of modules", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Basic programming",
+        description: "e-book of basic programming",
+      });
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Database system",
+        description: "e-book of database system",
+      });
+      const module2 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "AI: Introduction",
+        description: "presentation about artificial intelligence",
+      });
+
+      const response = await request(app).get("/api/modules/search?query=e-book");
+
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).toContain("Modules found");
+
+      expect(responseObject.length).toEqual(2);
+
+      expect(responseObject).toStrictEqual([
+        {
+          id: module0.id,
+          title: module0.title,
+          description: module0.description,
+          upVote: module0.upVote,
+          downVote: module0.downVote,
+          createdAt: module0.createdAt.toISOString(),
+          updatedAt: module0.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+        {
+          id: module1.id,
+          title: module1.title,
+          description: module1.description,
+          upVote: module1.upVote,
+          downVote: module1.downVote,
+          createdAt: module1.createdAt.toISOString(),
+          updatedAt: module1.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+      ]);
+    });
+
+    it("should return not found error when no modules found", async () => {
+      const response = await request(app).get("/api/modules/search?query=xxx");
+
+      const responseBody = response.body;
+      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toContain("No modules found");
+      expect(responseBody.responseObject).toBeNull();
     });
   });
 });

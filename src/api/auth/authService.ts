@@ -143,8 +143,6 @@ export class AuthService {
       return ServiceResponse.failure("Failed to retrieve user", null, StatusCodes.INTERNAL_SERVER_ERROR);
     }
   }
-
-
 }
 
 export const authService = new AuthService();

@@ -13,6 +13,12 @@ class LecturerController {
     const serviceResponse = await lecturerService.findById(id);
     handleServiceResponse(serviceResponse, res);
   };
+
+  public getLecturersSearch: RequestHandler = async (req: Request, res: Response) => {
+    const { query } = req.query;
+    const serviceResponse = await lecturerService.findByQuery(query);
+    handleServiceResponse(serviceResponse, res);
+  };
 }
 
 export const lecturerController = new LecturerController();

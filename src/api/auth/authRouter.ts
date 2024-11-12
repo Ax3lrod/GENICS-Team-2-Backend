@@ -53,4 +53,3 @@ authRouter.post("/register", validateRequest(RegisterSchema), authController.reg
 authRouter.post("/login", validateRequest(LoginSchema), authController.login);
 authRouter.post("/forget-password", authController.forgetPassword);
 authRouter.get("/me", authController.me);
-
