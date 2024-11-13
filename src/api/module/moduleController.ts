@@ -32,6 +32,13 @@ class ModuleController {
     const serviceResponse = await moduleService.downvoteModuleById(userId, moduleId);
     handleServiceResponse(serviceResponse, res);
   };
+
+  public getModulesSearch: RequestHandler = async (req: Request, res: Response) => {
+    const { query } = req.query;
+
+    const serviceResponse = await moduleService.findByQuery(query);
+    handleServiceResponse(serviceResponse, res);
+  };
 }
 
 export const moduleController = new ModuleController();

@@ -1,41 +1,5 @@
-/*
-  Warnings:
-
-  - You are about to drop the `Lecturer` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `Module` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `ModuleVoteRecord` table. If the table is not empty, all the data it contains will be lost.
-  - You are about to drop the `User` table. If the table is not empty, all the data it contains will be lost.
-
-*/
--- DropForeignKey
-ALTER TABLE "Comments" DROP CONSTRAINT "Comments_lecturerId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comments" DROP CONSTRAINT "Comments_moduleId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Comments" DROP CONSTRAINT "Comments_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "Module" DROP CONSTRAINT "Module_userId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ModuleVoteRecord" DROP CONSTRAINT "ModuleVoteRecord_moduleId_fkey";
-
--- DropForeignKey
-ALTER TABLE "ModuleVoteRecord" DROP CONSTRAINT "ModuleVoteRecord_userId_fkey";
-
--- DropTable
-DROP TABLE "Lecturer";
-
--- DropTable
-DROP TABLE "Module";
-
--- DropTable
-DROP TABLE "ModuleVoteRecord";
-
--- DropTable
-DROP TABLE "User";
+-- CreateEnum
+CREATE TYPE "VoteType" AS ENUM ('UPVOTE', 'DOWNVOTE');
 
 -- CreateTable
 CREATE TABLE "Users" (
@@ -48,7 +12,7 @@ CREATE TABLE "Users" (
     "passwordResetToken" TEXT,
     "passwordResetExpires" TIMESTAMP(3),
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Users_pkey" PRIMARY KEY ("id")
 );
@@ -76,7 +40,7 @@ CREATE TABLE "Modules" (
     "downVote" INTEGER NOT NULL DEFAULT 0,
     "userId" TEXT,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
 
     CONSTRAINT "Modules_pkey" PRIMARY KEY ("id")
 );
@@ -90,9 +54,24 @@ CREATE TABLE "Lecturers" (
     "upVote" INTEGER NOT NULL DEFAULT 0,
     "downVote" INTEGER NOT NULL DEFAULT 0,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    "updatedAt" TIMESTAMP(3) NOT NULL,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "rating" DOUBLE PRECISION NOT NULL DEFAULT 0,
 
     CONSTRAINT "Lecturers_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "Comments" (
+    "id" TEXT NOT NULL,
+    "feedback" TEXT NOT NULL,
+    "rating" INTEGER NOT NULL,
+    "userId" TEXT NOT NULL,
+    "moduleId" TEXT,
+    "lecturerId" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+
+    CONSTRAINT "Comments_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex

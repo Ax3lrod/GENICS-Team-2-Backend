@@ -20,7 +20,6 @@ export class LecturerService {
       const lecturersToResponse = lecturers.map((lecturer) => ShortLecturerSchema.parse(lecturer));
       return ServiceResponse.success("Lecturers found", lecturersToResponse);
     } catch (error) {
-      console.log("🚀 ~ LecturerService ~ findAll ~ error:", error);
       return ServiceResponse.failure(
         "An error occurred while retrieving lecturers",
         null,
@@ -39,9 +38,26 @@ export class LecturerService {
       const lecturerToResponse = DetailedLecturerSchema.parse(lecturer);
       return ServiceResponse.success<Lecturer>("Lecturer found", lecturerToResponse);
     } catch (error) {
-      console.log("🚀 ~ LecturerService ~ findById ~ error:", error);
       return ServiceResponse.failure(
         "An error occurred while retrieving the lecturer.",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
+
+  async findByQuery(query: string): Promise<ServiceResponse<Lecturer[] | null>> {
+    try {
+      const lecturers = await this.lecturerRepository.findByQuery(query);
+      if (!lecturers || lecturers.length === 0) {
+        return ServiceResponse.failure("No lecturers found", null, StatusCodes.NOT_FOUND);
+      }
+
+      const lecturersToResponse = lecturers.map((lecturer) => ShortLecturerSchema.parse(lecturer));
+      return ServiceResponse.success("Lecturers found", lecturersToResponse);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occurred while retrieving lecturers",
         null,
         StatusCodes.INTERNAL_SERVER_ERROR,
       );

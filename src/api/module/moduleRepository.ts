@@ -137,4 +137,39 @@ export class ModuleRepository {
 
     return vote;
   }
+
+  async findByQuery(query: string): Promise<Module[]> {
+    return await prisma.modules.findMany({
+      where: {
+        OR: [
+          {
+            title: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+          {
+            description: {
+              contains: query,
+              mode: "insensitive",
+            },
+          },
+        ],
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        upVote: true,
+        downVote: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
+    });
+  }
 }

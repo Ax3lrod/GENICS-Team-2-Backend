@@ -47,3 +47,12 @@ export const DetailedLecturerSchema = z
     updatedAt: z.date(),
   })
   .strip();
+
+export const SearchSchema = z.object({
+  query: z
+    .string({
+      required_error: "Parameter 'query' harus ada",
+      invalid_type_error: "Parameter 'query' harus berupa string",
+    })
+    .min(1, "Query tidak boleh kosong"),
+});
