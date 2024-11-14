@@ -16,7 +16,7 @@ class LecturerController {
 
   public getLecturersSearch: RequestHandler = async (req: Request, res: Response) => {
     const { query } = req.query;
-    const serviceResponse = await lecturerService.findByQuery(query);
+    const serviceResponse = await lecturerService.findByQuery(query as string);
     handleServiceResponse(serviceResponse, res);
   };
 }

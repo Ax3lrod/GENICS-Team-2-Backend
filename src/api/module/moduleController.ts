@@ -3,6 +3,13 @@ import type { Request, RequestHandler, Response } from "express";
 import { moduleService } from "./moduleService";
 
 class ModuleController {
+  public postModule: RequestHandler = async (req: Request, res: Response) => {
+    const file = req.file as Express.Multer.File;
+    const payload = req.body;
+    const serviceResponse = await moduleService.addModule(payload, file);
+    handleServiceResponse(serviceResponse, res);
+  };
+
   public getModules: RequestHandler = async (_req: Request, res: Response) => {
     const serviceResponse = await moduleService.findAll();
     handleServiceResponse(serviceResponse, res);
@@ -36,7 +43,7 @@ class ModuleController {
   public getModulesSearch: RequestHandler = async (req: Request, res: Response) => {
     const { query } = req.query;
 
-    const serviceResponse = await moduleService.findByQuery(query);
+    const serviceResponse = await moduleService.findByQuery(query as string);
     handleServiceResponse(serviceResponse, res);
   };
 }

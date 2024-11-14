@@ -1,19 +1,69 @@
-import express, { type Router } from "express";
-
 import { OpenAPIRegistry } from "@asteasolutions/zod-to-openapi";
+import express, { type Router } from "express";
 import { z } from "zod";
 
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
-import { validateRequestQuery } from "@/common/utils/httpHandlers";
+import { validateFileUpload, validateRequest, validateRequestQuery } from "@/common/utils/httpHandlers";
 
 import { authenticateJwt } from "@/common/middleware/authenticateJwt";
+import { createUploadFileService } from "@/common/utils/createUploadFileService";
 import { moduleController } from "./moduleController";
-import { DetailedModuleSchema, ModuleSchema, SearchSchema, ShortModuleSchema } from "./moduleModel";
+
+import { autoCreateDirectories } from "@/common/utils/storageService";
+import { env } from "@/config/env";
+import {
+  DetailedModuleSchema,
+  ModuleSchema,
+  SearchSchema,
+  ShortModuleSchema,
+  postModuleFileSchema,
+  postModuleSchema,
+} from "./moduleModel";
 
 export const moduleRegistry = new OpenAPIRegistry();
 export const moduleRouter: Router = express.Router();
 
+const uploadStoragePath = autoCreateDirectories(env.MODULE_UPLOAD_STORAGE_PATH);
+const uploadFile = createUploadFileService(uploadStoragePath);
+
 moduleRegistry.register("Module", ModuleSchema);
+
+moduleRegistry.registerPath({
+  method: "post",
+  path: "/api/modules",
+  tags: ["Module"],
+  summary: "Add a new module",
+  description: "Creates a new module with details and an optional file upload. Requires JWT authorization.",
+  requestBody: {
+    required: true,
+    content: {
+      "multipart/form-data": {
+        schema: {
+          type: "object",
+          properties: {
+            title: { type: "string", description: "Title of the module" },
+            description: { type: "string", description: "Description of the module" },
+            faculty: { type: "string", description: "Faculty associated with the module" },
+            major: { type: "string", description: "Major associated with the module" },
+            course: { type: "string", description: "Course associated with the module" },
+            file: {
+              type: "string",
+              format: "binary",
+              description: "File upload for the module",
+            },
+          },
+          required: ["title", "description", "faculty", "major", "course"],
+        },
+      },
+    },
+  },
+  security: [
+    {
+      bearerAuth: [],
+    },
+  ],
+  responses: createApiResponse(DetailedModuleSchema, "Module created successfully"),
+});
 
 moduleRegistry.registerPath({
   method: "get",
@@ -101,6 +151,14 @@ moduleRegistry.registerPath({
   responses: createApiResponse(z.array(ShortModuleSchema), "Success"),
 });
 
+moduleRouter.post(
+  "/",
+  authenticateJwt,
+  uploadFile.single("file"),
+  validateRequest(postModuleSchema),
+  validateFileUpload(postModuleFileSchema),
+  moduleController.postModule,
+);
 moduleRouter.get("/", moduleController.getModules);
 moduleRouter.get("/search", validateRequestQuery(SearchSchema), moduleController.getModulesSearch);
 moduleRouter.get("/:id", moduleController.getModuleById);

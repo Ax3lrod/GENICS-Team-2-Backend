@@ -1,4 +1,5 @@
 require("dotenv").config();
+import path from "node:path";
 import { EnvError, cleanEnv, email, json, makeValidator, port, str } from "envalid";
 
 const dbUrl = makeValidator<string>((url: string) => {
@@ -31,4 +32,6 @@ export const env = cleanEnv(process.env, {
 
   COMMON_RATE_LIMIT_MAX_REQUESTS: str({ default: "20" }),
   COMMON_RATE_LIMIT_WINDOW_MS: str({ default: "1000" }),
+
+  MODULE_UPLOAD_STORAGE_PATH: str({ default: path.join(process.cwd(), "public/modules") }),
 });

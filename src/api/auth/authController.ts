@@ -29,8 +29,10 @@ class AuthController {
   };
 
   public me: RequestHandler = async (req: Request, res: Response) => {
-    const token = req.headers.authorization?.split(" ")[1];
-    const serviceResponse = await authService.getAuthenticatedUser(token);
+    const user = req.user as Express.User;
+    const userId = user.id;
+
+    const serviceResponse = await authService.getAuthenticatedUser(userId);
     handleServiceResponse(serviceResponse, res);
   };
 }

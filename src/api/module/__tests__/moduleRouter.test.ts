@@ -1,5 +1,5 @@
+import path from "node:path";
 import type { ServiceResponse } from "@/common/models/serviceResponse";
-import { StatusCodes } from "http-status-codes";
 import request from "supertest";
 
 import { tokenManager } from "@/common/utils/tokenManager";
@@ -13,6 +13,11 @@ import { LecturersTableTestHelper } from "@/__tests__/helpers/LecturersTableTest
 import { ModuleVoteRecordsTableTestHelper } from "@/__tests__/helpers/ModuleVoteRecordsTableTestHelper";
 import { ModulesTableTestHelper } from "@/__tests__/helpers/ModulesTableTestHelper";
 import { UsersTableTestHelper } from "@/__tests__/helpers/UsersTableTestHelper";
+import { cleanDirectory } from "@/common/utils/storageService";
+import { StatusCodes } from "http-status-codes";
+
+const rootPath = process.cwd();
+const fileDirPath = path.join(rootPath, "/src/__tests__/upload");
 
 describe("Module API Endpoints", () => {
   beforeEach(async () => {
@@ -30,6 +35,8 @@ describe("Module API Endpoints", () => {
   });
 
   afterAll(async () => {
+    cleanDirectory(path.join(rootPath, "/public/modules"));
+
     await DatabaseTestHelper.cleanAllTables();
 
     const users = await UsersTableTestHelper.findAllUsers();
@@ -43,6 +50,115 @@ describe("Module API Endpoints", () => {
     expect(lecturers).toHaveLength(0);
 
     await prisma.$disconnect();
+  });
+
+  describe("POST /api/modules", () => {
+    it("should return a valid response body", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+      const token = tokenManager.generateToken({
+        id: user.id,
+        username: user.username,
+      });
+      const filePath = path.join(fileDirPath, "file-upload-v1.pdf");
+
+      const response = await request(app)
+        .post("/api/modules")
+        .set("Content-Type", "multipart/form-data")
+        .field("title", "title")
+        .field("description", "description")
+        .field("faculty", "faculty")
+        .field("major", "major")
+        .field("course", "course")
+        .attach("file", filePath)
+        .set("Authorization", `Bearer ${token}`);
+
+      const responseBody: ServiceResponse = response.body;
+      expect(response.statusCode).toEqual(StatusCodes.CREATED);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).toContain("Module uploaded successfully");
+
+      const responseObject: Module = response.body.responseObject;
+      expect(responseObject).toStrictEqual({
+        id: expect.any(String),
+        title: "title",
+        description: "description",
+        faculty: "faculty",
+        major: "major",
+        course: "course",
+        filePath: `/modules/${responseObject.id}.pdf`,
+        upVote: 0,
+        downVote: 0,
+        createdAt: expect.any(String),
+        updatedAt: expect.any(String),
+      });
+
+      const fileResponse = await request(app).get(`/files/modules/${responseObject.id}.pdf`);
+      expect(fileResponse.statusCode).toEqual(StatusCodes.OK);
+    });
+
+    it("should return bad request if file is undefined", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+      const token = tokenManager.generateToken({
+        id: user.id,
+        username: user.username,
+      });
+
+      const response = await request(app)
+        .post("/api/modules")
+        .set("Content-Type", "multipart/form-data")
+        .field("title", "title")
+        .field("description", "description")
+        .field("faculty", "faculty")
+        .field("major", "major")
+        .field("course", "course")
+        .set("Authorization", `Bearer ${token}`);
+
+      const responseBody: ServiceResponse = response.body;
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.message).toBeDefined();
+      expect(responseBody.responseObject).toBeFalsy();
+    });
+
+    it("should return error if auth is invalid", async () => {
+      const response = await request(app)
+        .post("/api/modules")
+        .set("Content-Type", "multipart/form-data")
+        .field("title", "title")
+        .field("description", "description")
+        .field("faculty", "faculty")
+        .field("major", "major")
+        .field("course", "course");
+
+      const responseBody: ServiceResponse = response.body;
+      expect(response.statusCode).toEqual(StatusCodes.UNAUTHORIZED);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.responseObject).toBeFalsy();
+    });
+
+    it("should response error if payload is invalid", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+      const token = tokenManager.generateToken({
+        id: user.id,
+        username: user.username,
+      });
+      const filePath = path.join(fileDirPath, "file-upload-v1.pdf");
+
+      const response = await request(app)
+        .post("/api/modules")
+        .set("Content-Type", "multipart/form-data")
+        .field("description", "description")
+        .field("faculty", "faculty")
+        .field("major", "major")
+        .field("course", "course")
+        .attach("file", filePath)
+        .set("Authorization", `Bearer ${token}`);
+
+      const responseBody: ServiceResponse = response.body;
+      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
+      expect(responseBody.success).toBeFalsy();
+      expect(responseBody.responseObject).toBeFalsy();
+    });
   });
 
   describe("GET /api/modules", () => {
@@ -67,6 +183,10 @@ describe("Module API Endpoints", () => {
         id: module0.id,
         title: module0.title,
         description: module0.description,
+        faculty: module0.faculty,
+        major: module0.major,
+        course: module0.course,
+        filePath: module0.filePath,
         upVote: module0.upVote,
         downVote: module0.downVote,
         createdAt: module0.createdAt.toISOString(),
@@ -79,6 +199,10 @@ describe("Module API Endpoints", () => {
         id: module1.id,
         title: module1.title,
         description: module1.description,
+        faculty: module1.faculty,
+        major: module1.major,
+        course: module1.course,
+        filePath: module1.filePath,
         upVote: module1.upVote,
         downVote: module1.downVote,
         createdAt: module1.createdAt.toISOString(),
@@ -91,6 +215,10 @@ describe("Module API Endpoints", () => {
         id: module2.id,
         title: module2.title,
         description: module2.description,
+        faculty: module2.faculty,
+        major: module2.major,
+        course: module2.course,
+        filePath: module2.filePath,
         upVote: module2.upVote,
         downVote: module2.downVote,
         createdAt: module2.createdAt.toISOString(),
@@ -147,6 +275,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 1,
         downVote: 0,
         createdAt: module.createdAt.toISOString(),
@@ -216,6 +348,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 1,
         downVote: 0,
         createdAt: expect.any(String),
@@ -254,6 +390,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 0,
         downVote: 0,
         createdAt: expect.any(String),
@@ -292,6 +432,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 1,
         downVote: 0,
         createdAt: expect.any(String),
@@ -351,6 +495,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 0,
         downVote: 1,
         createdAt: expect.any(String),
@@ -389,6 +537,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 0,
         downVote: 0,
         createdAt: expect.any(String),
@@ -427,6 +579,10 @@ describe("Module API Endpoints", () => {
         id: module.id,
         title: module.title,
         description: module.description,
+        faculty: module.faculty,
+        major: module.major,
+        course: module.course,
+        filePath: module.filePath,
         upVote: 0,
         downVote: 1,
         createdAt: expect.any(String),
@@ -473,6 +629,10 @@ describe("Module API Endpoints", () => {
           id: module0.id,
           title: module0.title,
           description: module0.description,
+          faculty: module0.faculty,
+          major: module0.major,
+          course: module0.course,
+          filePath: module0.filePath,
           upVote: module0.upVote,
           downVote: module0.downVote,
           createdAt: module0.createdAt.toISOString(),
@@ -485,6 +645,10 @@ describe("Module API Endpoints", () => {
           id: module1.id,
           title: module1.title,
           description: module1.description,
+          faculty: module1.faculty,
+          major: module1.major,
+          course: module1.course,
+          filePath: module1.filePath,
           upVote: module1.upVote,
           downVote: module1.downVote,
           createdAt: module1.createdAt.toISOString(),
@@ -530,6 +694,10 @@ describe("Module API Endpoints", () => {
           id: module0.id,
           title: module0.title,
           description: module0.description,
+          faculty: module0.faculty,
+          major: module0.major,
+          course: module0.course,
+          filePath: module0.filePath,
           upVote: module0.upVote,
           downVote: module0.downVote,
           createdAt: module0.createdAt.toISOString(),
@@ -542,6 +710,10 @@ describe("Module API Endpoints", () => {
           id: module1.id,
           title: module1.title,
           description: module1.description,
+          faculty: module1.faculty,
+          major: module1.major,
+          course: module1.course,
+          filePath: module1.filePath,
           upVote: module1.upVote,
           downVote: module1.downVote,
           createdAt: module1.createdAt.toISOString(),

@@ -6,6 +6,7 @@ import { z } from "zod";
 import { createApiResponse } from "@/api-docs/openAPIResponseBuilders";
 import { validateRequest } from "@/common/utils/httpHandlers";
 
+import { authenticateJwt } from "@/common/middleware/authenticateJwt";
 import { authController } from "./authController";
 import { LoginResponseSchema, LoginSchema, RegisterResponseSchema, RegisterSchema } from "./authModel";
 
@@ -52,4 +53,4 @@ authRegistry.registerPath({
 authRouter.post("/register", validateRequest(RegisterSchema), authController.register);
 authRouter.post("/login", validateRequest(LoginSchema), authController.login);
 authRouter.post("/forget-password", authController.forgetPassword);
-authRouter.get("/me", authController.me);
+authRouter.get("/me", authenticateJwt, authController.me);

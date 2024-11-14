@@ -1,7 +1,7 @@
 import { commonValidations } from "@/common/utils/commonValidation";
 import { extendZodWithOpenApi } from "@asteasolutions/zod-to-openapi";
 import type { VoteType } from "@prisma/client";
-import { z } from "zod";
+import { object, z } from "zod";
 
 extendZodWithOpenApi(z);
 
@@ -9,8 +9,12 @@ export type Module = {
   id: string;
   title: string;
   description: string;
-  upvoteCount: number;
-  downvoteCount: number;
+  faculty: string;
+  major: string;
+  course: string;
+  filePath: string | null;
+  upVote: number;
+  downVote: number;
   createdAt: Date;
   updatedAt: Date;
 };
@@ -19,6 +23,10 @@ export type DetailedModule = {
   id: string;
   title: string;
   description: string;
+  faculty: string;
+  major: string;
+  course: string;
+  filePath: string | null;
   upVote: number;
   downVote: number;
   createdAt: Date;
@@ -41,13 +49,19 @@ export type ShortModule = {
   id: string;
   title: string;
   description: string;
-  upVote: number;
-  downVote: number;
-  createdAt: Date;
-  updatedAt: Date;
-  user?: {
-    username: string;
-  } | null;
+  faculty: string;
+  major: string;
+  course: string;
+  filePath: string | null;
+};
+
+export type PostModule = {
+  id: string;
+  title: string;
+  description: string;
+  faculty: string;
+  major: string;
+  course: string;
 };
 
 export const ModuleSchema = z.object({
@@ -63,6 +77,10 @@ export const ShortModuleSchema = z
     id: z.string(),
     title: z.string(),
     description: z.string(),
+    faculty: z.string(),
+    major: z.string(),
+    course: z.string(),
+    filePath: z.string(),
     upVote: z.number(),
     downVote: z.number(),
     createdAt: z.date(),
@@ -81,6 +99,10 @@ export const DetailedModuleSchema = z
     id: z.string(),
     title: z.string(),
     description: z.string(),
+    faculty: z.string(),
+    major: z.string(),
+    course: z.string(),
+    filePath: z.string(),
     upVote: z.number(),
     downVote: z.number(),
     createdAt: z.date(),
@@ -111,4 +133,18 @@ export const SearchSchema = z.object({
       invalid_type_error: "Parameter 'query' harus berupa string",
     })
     .min(1, "Query tidak boleh kosong"),
+});
+
+export const postModuleSchema = z.object({
+  title: z.string(),
+  description: z.string(),
+  faculty: z.string(),
+  major: z.string(),
+  course: z.string(),
+});
+
+export const postModuleFileSchema = z.object({
+  file: z.object({
+    filename: z.string(),
+  }),
 });
