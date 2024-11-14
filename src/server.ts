@@ -18,7 +18,6 @@ import rateLimiter from "@/common/middleware/rateLimiter";
 import requestLogger from "@/common/middleware/requestLogger";
 
 import passport from "@/common/strategy/passport";
-import { env } from "./config/env";
 
 const logger = pino({ name: "server start" });
 const app: Express = express();
@@ -40,6 +39,7 @@ app.get("/ping", (req, res) => {
 });
 
 // Routes
+app.use("/files", express.static("public"));
 app.use("/health-check", healthCheckRouter);
 
 app.use("/api/lecturers", lecturerRouter);

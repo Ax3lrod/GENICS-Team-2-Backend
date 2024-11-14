@@ -9,7 +9,7 @@ export const ModulesTableTestHelper = {
     major = "major",
     course = "course",
     description = "description",
-    fileUrl = "www.google.com",
+    filePath = "www.google.com",
   }: {
     userId: string;
     title?: string;
@@ -17,7 +17,7 @@ export const ModulesTableTestHelper = {
     major?: string;
     course?: string;
     description?: string;
-    fileUrl?: string;
+    filePath?: string;
   }) {
     return await prisma.modules.create({
       data: {
@@ -27,7 +27,7 @@ export const ModulesTableTestHelper = {
         major,
         course,
         description,
-        fileUrl,
+        filePath,
       },
     });
   },

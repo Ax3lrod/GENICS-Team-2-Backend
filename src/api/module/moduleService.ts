@@ -1,11 +1,40 @@
 import { ServiceResponse } from "@/common/models/serviceResponse";
+import { changeFileName, createStorage } from "@/common/utils/storageService";
 import { VoteType } from "@prisma/client";
 import { StatusCodes } from "http-status-codes";
-import { type DetailedModule, DetailedModuleSchema, type ShortModule, ShortModuleSchema } from "./moduleModel";
+import { v4 as uuidv4 } from "uuid";
+import {
+  type DetailedModule,
+  DetailedModuleSchema,
+  type PostModule,
+  type ShortModule,
+  ShortModuleSchema,
+} from "./moduleModel";
 import { ModuleRepository } from "./moduleRepository";
 
 export class ModuleService {
   constructor(private moduleRepository = new ModuleRepository()) {}
+
+  async addModule(payload: PostModule, file: Express.Multer.File) {
+    try {
+      const id = uuidv4();
+      const newFile = changeFileName(file.path, id);
+      const module = await this.moduleRepository.addModule({
+        ...payload,
+        id,
+        filePath: `/modules/${newFile.filename}`,
+      });
+
+      const modulesToResponse = ShortModuleSchema.parse(module);
+      return ServiceResponse.success("Module uploaded successfully", modulesToResponse, StatusCodes.CREATED);
+    } catch (error) {
+      return ServiceResponse.failure(
+        "An error occured while creating modules",
+        null,
+        StatusCodes.INTERNAL_SERVER_ERROR,
+      );
+    }
+  }
 
   async findAll(): Promise<ServiceResponse<ShortModule[] | null>> {
     try {
@@ -100,7 +129,7 @@ export class ModuleService {
         return ServiceResponse.failure("No modules found", null, StatusCodes.NOT_FOUND);
       }
 
-      const modulesToResponse = modules.map((module) => ShortModuleSchema.parse(module));
+      const modulesToResponse = modules.map((module: any) => ShortModuleSchema.parse(module));
       return ServiceResponse.success("Modules found", modulesToResponse);
     } catch (error) {
       return ServiceResponse.failure(

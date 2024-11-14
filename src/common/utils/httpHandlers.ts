@@ -32,3 +32,15 @@ export const validateRequestQuery = (schema: ZodSchema) => (req: Request, res: R
     handleServiceResponse(serviceResponse, res);
   }
 };
+
+export const validateFileUpload = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
+  try {
+    schema.parse(req);
+    next();
+  } catch (err) {
+    const errorMessage = `Invalid input: ${(err as ZodError).errors.map((e) => e.message).join(", ")}`;
+    const statusCode = StatusCodes.BAD_REQUEST;
+    const serviceResponse = ServiceResponse.failure(errorMessage, null, statusCode);
+    handleServiceResponse(serviceResponse, res);
+  }
+};

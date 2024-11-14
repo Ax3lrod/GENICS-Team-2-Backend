@@ -1,14 +1,24 @@
 import prisma from "@/config/prisma";
 import { type ModuleVoteRecords, VoteType } from "@prisma/client";
-import type { DetailedModule, ShortModule } from "./moduleModel";
+import type { DetailedModule, Module, PostModule, ShortModule } from "./moduleModel";
 
 export class ModuleRepository {
+  async addModule(payload: ShortModule) {
+    return prisma.modules.create({
+      data: payload,
+    });
+  }
+
   async findAllAsync(): Promise<ShortModule[]> {
     return prisma.modules.findMany({
       select: {
         id: true,
         title: true,
         description: true,
+        faculty: true,
+        major: true,
+        course: true,
+        filePath: true,
         upVote: true,
         downVote: true,
         createdAt: true,
@@ -29,6 +39,10 @@ export class ModuleRepository {
         id: true,
         title: true,
         description: true,
+        faculty: true,
+        major: true,
+        course: true,
+        filePath: true,
         upVote: true,
         downVote: true,
         createdAt: true,
@@ -160,6 +174,10 @@ export class ModuleRepository {
         id: true,
         title: true,
         description: true,
+        faculty: true,
+        major: true,
+        course: true,
+        filePath: true,
         upVote: true,
         downVote: true,
         createdAt: true,

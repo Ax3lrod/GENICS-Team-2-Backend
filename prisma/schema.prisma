@@ -46,7 +46,7 @@ model Modules {
   major       String
   course      String
   description String
-  fileUrl     String
+  filePath    String?
   upVote      Int                 @default(0)
   downVote    Int                 @default(0)
   userId      String?
