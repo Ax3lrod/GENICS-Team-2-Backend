@@ -35,7 +35,7 @@ export class LecturerRepository {
     });
   }
 
-  async findByQuery(query: string): Promise<Lecturer | null> {
+  async findByQuery(query: string): Promise<Lecturer[] | null> {
     return await prisma.lecturers.findMany({
       where: {
         name: {
