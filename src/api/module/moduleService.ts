@@ -15,11 +15,11 @@ import { ModuleRepository } from "./moduleRepository";
 export class ModuleService {
   constructor(private moduleRepository = new ModuleRepository()) {}
 
-  async addModule(payload: PostModule, file: Express.Multer.File) {
+  async addModule(userId: string, payload: PostModule, file: Express.Multer.File) {
     try {
       const id = uuidv4();
       const newFile = changeFileName(file.path, id);
-      const module = await this.moduleRepository.addModule({
+      const module = await this.moduleRepository.addModule(userId, {
         ...payload,
         id,
         filePath: `/modules/${newFile.filename}`,
