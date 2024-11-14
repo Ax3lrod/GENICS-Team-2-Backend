@@ -3,9 +3,30 @@ import { type ModuleVoteRecords, VoteType } from "@prisma/client";
 import type { DetailedModule, Module, PostModule, ShortModule } from "./moduleModel";
 
 export class ModuleRepository {
-  async addModule(payload: ShortModule) {
+  async addModule(userId: string, payload: ShortModule) {
     return prisma.modules.create({
-      data: payload,
+      data: {
+        ...payload,
+        userId,
+      },
+      select: {
+        id: true,
+        title: true,
+        description: true,
+        faculty: true,
+        major: true,
+        course: true,
+        filePath: true,
+        upVote: true,
+        downVote: true,
+        createdAt: true,
+        updatedAt: true,
+        user: {
+          select: {
+            username: true,
+          },
+        },
+      },
     });
   }
 

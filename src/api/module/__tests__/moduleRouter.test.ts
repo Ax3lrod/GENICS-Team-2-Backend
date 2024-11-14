@@ -90,6 +90,9 @@ describe("Module API Endpoints", () => {
         downVote: 0,
         createdAt: expect.any(String),
         updatedAt: expect.any(String),
+        user: {
+          username: user.username,
+        },
       });
 
       const fileResponse = await request(app).get(`/files/modules/${responseObject.id}.pdf`);

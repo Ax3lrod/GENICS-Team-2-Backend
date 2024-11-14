@@ -124,6 +124,8 @@ describe("Users API Endpoints", () => {
         email: user.email,
         faculty: user.faculty,
         major: user.major,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
         uploadedModules: [
           {
             id: module.id,
@@ -140,6 +142,7 @@ describe("Users API Endpoints", () => {
             },
           },
         ],
+        comments: [],
       });
     });
 

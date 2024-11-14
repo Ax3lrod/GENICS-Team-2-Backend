@@ -6,7 +6,9 @@ class ModuleController {
   public postModule: RequestHandler = async (req: Request, res: Response) => {
     const file = req.file as Express.Multer.File;
     const payload = req.body;
-    const serviceResponse = await moduleService.addModule(payload, file);
+    const user = req.user as Express.User;
+
+    const serviceResponse = await moduleService.addModule(user.id, payload, file);
     handleServiceResponse(serviceResponse, res);
   };
 

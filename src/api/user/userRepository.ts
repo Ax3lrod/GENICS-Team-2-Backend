@@ -36,6 +36,8 @@ export class UserRepository {
         email: true,
         faculty: true,
         major: true,
+        createdAt: true,
+        updatedAt: true,
         uploadedModules: {
           select: {
             id: true,
@@ -49,6 +51,18 @@ export class UserRepository {
             module: {
               select: {
                 id: true,
+                title: true,
+              },
+            },
+          },
+        },
+        comments: {
+          select: {
+            id: true,
+            feedback: true,
+            rating: true,
+            module: {
+              select: {
                 title: true,
               },
             },

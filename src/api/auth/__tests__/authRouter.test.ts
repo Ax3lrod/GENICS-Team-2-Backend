@@ -10,6 +10,7 @@ import { LecturersTableTestHelper } from "@/__tests__/helpers/LecturersTableTest
 import { ModuleVoteRecordsTableTestHelper } from "@/__tests__/helpers/ModuleVoteRecordsTableTestHelper";
 import { ModulesTableTestHelper } from "@/__tests__/helpers/ModulesTableTestHelper";
 import { UsersTableTestHelper } from "@/__tests__/helpers/UsersTableTestHelper";
+import { tokenManager } from "@/common/utils/tokenManager";
 
 describe("Auth API Endpoints", () => {
   beforeEach(async () => {
@@ -189,6 +190,38 @@ describe("Auth API Endpoints", () => {
       expect(responseBody.success).toBeFalsy();
       expect(responseBody.message).toBeDefined();
       expect(responseBody.responseObject).toBeNull();
+    });
+  });
+
+  describe("GET /auth/me", () => {
+    it("should return valid response body", async () => {
+      const user = await UsersTableTestHelper.insertUser({
+        username: "genics",
+        password: "password",
+      });
+      const token = tokenManager.generateToken({
+        id: user.id,
+        username: user.username,
+      });
+
+      const response = await request(app).get("/api/auth/me").set("Authorization", `Bearer ${token}`);
+      const responseBody: ServiceResponse = response.body;
+
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).toBeDefined();
+      expect(responseBody.responseObject).toStrictEqual({
+        id: user.id,
+        username: user.username,
+        email: user.email,
+        faculty: user.faculty,
+        major: user.major,
+        createdAt: user.createdAt.toISOString(),
+        updatedAt: user.updatedAt.toISOString(),
+        uploadedModules: [],
+        votes: [],
+        comments: [],
+      });
     });
   });
 });
