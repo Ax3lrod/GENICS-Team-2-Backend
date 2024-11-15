@@ -6,130 +6,46 @@ on:
       - main
 
 jobs:
-  migrate-database-production:
-    runs-on: ubuntu-latest
-    environment: Production
-
-    env:
-      DATABASE_URL: ${{ secrets.DATABASE_URL }}
-
-    steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
-
-      - name: Use the latest stable Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: "npm"
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Run migrations
-        run: npm run prisma:deploy
-
-  server-check:
-    runs-on: ubuntu-latest
-    needs: migrate-database-production
-    environment: Production
-
-    env:
-      DATABASE_URL: postgresql://developer:developer@localhost:5432/shareits
-      JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      NODE_ENV: development
-      PORT: ${{ secrets.PORT }}
-      HOST: ${{ secrets.HOST }}
-      CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
-      COMMON_RATE_LIMIT_WINDOW_MS: ${{ secrets.COMMON_RATE_LIMIT_WINDOW_MS }}
-      COMMON_RATE_LIMIT_MAX_REQUESTS: ${{ secrets.COMMON_RATE_LIMIT_MAX_REQUESTS }}
-      SMTP_HOST: ${{ secrets.SMTP_HOST }}
-      SMTP_PORT: ${{ secrets.SMTP_PORT }}
-      SMTP_USER: ${{ secrets.SMTP_USER }}
-      SMTP_PASS: ${{ secrets.SMTP_PASS }}
-
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Use the latest stable Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version-file: '.nvmrc'
-          cache: "npm"
-
-      - name: Install Dependencies
-        run: npm ci
-
-      - name: Install pm2 globally
-        run: npm install pm2 -g
-
-      - name: Start Application with pm2
-        run: |
-          pm2 start npm --name "genics-backend" -- run start
-      - name: Stop Application (pm2)
-        run: |
-          pm2 stop genics-backend || echo "No running instance found."
-
   deploy:
     runs-on: ubuntu-latest
-    needs: server-check
     environment: Production
 
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v4
+      - name: SSH and deploy to VPS
+        uses: appleboy/ssh-action@master
+        with: 
+          host: ${{ secrets.VPS_IP }}
+          username: ${{ secrets.VPS_USER }}
+          password: ${{ secrets.VPS_PASSWORD }}
+          port: 22
+          script: |
+            export NVM_DIR="$HOME/.nvm"
+            source "$NVM_DIR/nvm.sh"
 
-      - name: Install sshpass
-        run: sudo apt-get install -y sshpass
+            # Akses direktori proyek
+            cd ~/genics-backend
 
-      - name: Deploy to VPS
-        env:
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          PORT: ${{ secrets.PORT }}
-          HOST: ${{ secrets.HOST }}
-          CORS_ORIGIN: ${{ secrets.CORS_ORIGIN }}
-          COMMON_RATE_LIMIT_WINDOW_MS: ${{ secrets.COMMON_RATE_LIMIT_WINDOW_MS }}
-          COMMON_RATE_LIMIT_MAX_REQUESTS: ${{ secrets.COMMON_RATE_LIMIT_MAX_REQUESTS }}
-          SMTP_HOST: ${{ secrets.SMTP_HOST }}
-          SMTP_PORT: ${{ secrets.SMTP_PORT }}
-          SMTP_USER: ${{ secrets.SMTP_USER }}
-          SMTP_PASS: ${{ secrets.SMTP_PASS }}
-          VPS_IP: ${{ secrets.VPS_IP }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_PASSWORD: ${{ secrets.VPS_PASSWORD }}
-        run: |
-          # Menyambungkan ke VPS
-          sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_IP" << 'EOF'
+            # Pull perubahan terbaru dari branch main
+            git pull origin main
 
-          source ~/.bashrc
-          which npm
-          which pm2
+            # Setup .env file
+            echo "NODE_ENV=production" > .env
+            echo "DATABASE_URL=${{ secrets.DATABASE_URL }}" >> .env
+            echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> .env
+            echo "PORT=${{ secrets.PORT }}" >> .env
+            echo "HOST=${{ secrets.HOST }}" >> .env
+            echo "CORS_ORIGIN=${{ secrets.CORS_ORIGIN }}" >> .env
+            echo "COMMON_RATE_LIMIT_WINDOW_MS=${{ secrets.COMMON_RATE_LIMIT_WINDOW_MS }}" >> .env
+            echo "COMMON_RATE_LIMIT_MAX_REQUESTS=${{ secrets.COMMON_RATE_LIMIT_MAX_REQUESTS }}" >> .env
+            echo "SMTP_HOST=${{ secrets.SMTP_HOST }}" >> .env
+            echo "SMTP_PORT=${{ secrets.SMTP_PORT }}" >> .env
+            echo "SMTP_USER=${{ secrets.SMTP_USER }}" >> .env
+            echo "SMTP_PASS=${{ secrets.SMTP_PASS }}" >> .env
 
-          # Membuka direktori project
-          cd ~/genics-backend
+            # Setup Project
+            npm ci
+            npm run prisma:deploy
+            npm run build
 
-          # Pull update branch main
-          git pull origin main
-
-          # Setup file .env
-          echo "NODE_ENV=production" > .env
-          echo "DATABASE_URL=$DATABASE_URL" >> .env
-          echo "JWT_SECRET=$JWT_SECRET" >> .env
-          echo "PORT=$PORT" >> .env
-          echo "HOST=$HOST" >> .env
-          echo "CORS_ORIGIN=$CORS_ORIGIN" >> .env
-          echo "COMMON_RATE_LIMIT_WINDOW_MS=$COMMON_RATE_LIMIT_WINDOW_MS" >> .env
-          echo "COMMON_RATE_LIMIT_MAX_REQUESTS=$COMMON_RATE_LIMIT_MAX_REQUESTS" >> .env
-          echo "SMTP_HOST=$SMTP_HOST" >> .env
-          echo "SMTP_PORT=$SMTP_PORT" >> .env
-          echo "SMTP_USER=$SMTP_USER" >> .env
-          echo "SMTP_PASS=$SMTP_PASS" >> .env
-
-          # Install dependencies dan build
-          npm ci
-          npm run build
-
-          # Restart aplikasi dengan pm2
-          pm2 restart genics-backend --env production || pm2 start npm --name "genics-backend" -- run start --env production
-          EOF
+            # Restart pm2
+            pm2 restart genics-backend
