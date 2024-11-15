@@ -2,13 +2,43 @@ name: Test
 
 on:
   push:
-    branches: ["master"]
+    branches: 
+      - main
   pull_request:
-    branches: ["master"]
+    branches: 
+      - main
 
 jobs:
-  build:
+  tests:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:latest
+        env:
+          POSTGRES_USER: developer
+          POSTGRES_PASSWORD: developer
+          POSTGRES_DB: shareits
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U developer"
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DATABASE_URL: postgresql://developer:developer@localhost:5432/shareits
+      JWT_SECRET: ${{secrets.JWT_SECRET}}
+      NODE_ENV: development
+      PORT: ${{secrets.PORT}}
+      HOST: ${{secrets.HOST}}
+      CORS_ORIGIN: ${{secrets.CORS_ORIGIN}}
+      COMMON_RATE_LIMIT_WINDOW_MS: ${{secrets.COMMON_RATE_LIMIT_WINDOW_MS}}
+      COMMON_RATE_LIMIT_MAX_REQUESTS: ${{secrets.COMMON_RATE_LIMIT_MAX_REQUESTS}}
+      SMTP_HOST: ${{secrets.SMTP_HOST}}
+      SMTP_PORT: ${{secrets.SMTP_PORT}}
+      SMTP_USER: ${{secrets.SMTP_USER}}
+      SMTP_PASS: ${{secrets.SMTP_PASS}}
 
     steps:
       - uses: actions/checkout@v4
@@ -21,6 +51,17 @@ jobs:
 
       - name: Install Dependencies
         run: npm ci
+      
+      - name: Run migrations
+        run: npm run prisma:deploy
 
-      - name: Run Test
+      - name: Run Tests
         run: npm run test
+
+      - name: Test Run Application (npm run start)
+        run: |
+          nohup npm run start &
+
+      - name: Stop Application
+        run: |
+          pkill -f "npm run start" || echo "No running instance found."
