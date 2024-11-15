@@ -66,7 +66,6 @@ jobs:
       - name: Start Application with pm2
         run: |
           pm2 start npm --name "genics-backend" -- run start
-
       - name: Stop Application (pm2)
         run: |
           pm2 stop genics-backend || echo "No running instance found."
@@ -103,8 +102,15 @@ jobs:
           # Menyambungkan ke VPS
           sshpass -p "$VPS_PASSWORD" ssh -o StrictHostKeyChecking=no "$VPS_USER@$VPS_IP" << 'EOF'
 
+          source ~/.bashrc
+          which npm
+          which pm2
+
           # Membuka direktori project
           cd ~/genics-backend
+
+          # Pull update branch main
+          git pull origin main
 
           # Setup file .env
           echo "NODE_ENV=production" > .env
@@ -120,8 +126,10 @@ jobs:
           echo "SMTP_USER=$SMTP_USER" >> .env
           echo "SMTP_PASS=$SMTP_PASS" >> .env
 
-          # Menginstall dependencies dan menjalankan aplikasi
-          npm install 
+          # Install dependencies dan build
+          npm ci
           npm run build
-          pm2 restart genics-backend --env production || pm2 start genics-backend --env production
+
+          # Restart aplikasi dengan pm2
+          pm2 restart genics-backend --env production || pm2 start npm --name "genics-backend" -- run start --env production
           EOF
