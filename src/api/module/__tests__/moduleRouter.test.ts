@@ -728,34 +728,160 @@ describe("Module API Endpoints", () => {
       ]);
     });
 
-    it("should return not found error when no modules found", async () => {
+    it("should return modules sorted by faculty", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Physics Basics",
+        faculty: "Science",
+      });
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Database Systems",
+        faculty: "Engineering",
+      });
+      const module2 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Mathematics",
+        faculty: "Mathematics",
+      });
+
+      const response = await request(app).get("/api/modules/search?query=&sort=faculty");
+
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseObject[0].faculty).toBe("Engineering");
+      expect(responseObject[1].faculty).toBe("Mathematics");
+      expect(responseObject[2].faculty).toBe("Science");
+    });
+
+    it("should return modules sorted by department", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Intro to Chemistry",
+        major: "Chemistry",
+      });
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Intro to Physics",
+        major: "Physics",
+      });
+      const module2 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Intro to Biology",
+        major: "Biology",
+      });
+
+      const response = await request(app).get("/api/modules/search?query=i&sort=major");
+
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseObject[0].major).toBe("Biology");
+      expect(responseObject[1].major).toBe("Chemistry");
+      expect(responseObject[2].major).toBe("Physics");
+    });
+
+    it("should return modules sorted by createdAt", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Older Module",
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Add delay to create distinct timestamps
+
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Newer Module",
+      });
+      await new Promise((resolve) => setTimeout(resolve, 1000)); // Another delay
+
+      const module2 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Newest Module",
+      });
+
+      const response = await request(app).get("/api/modules/search?query=&sort=createdAt");
+
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(new Date(responseObject[0].createdAt) <= new Date(responseObject[1].createdAt)).toBe(true);
+      expect(new Date(responseObject[1].createdAt) <= new Date(responseObject[2].createdAt)).toBe(true);
+    });
+
+    it("should return empty array when no modules found", async () => {
       const response = await request(app).get("/api/modules/search?query=xxx");
 
       const responseBody = response.body;
-      expect(response.statusCode).toEqual(StatusCodes.NOT_FOUND);
-      expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toContain("No modules found");
-      expect(responseBody.responseObject).toBeNull();
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.responseObject).toStrictEqual([]);
     });
 
-    it("should return bad request error when query is empty string", async () => {
+    it("should return all modules when search query is empty string", async () => {
+      const user = await UsersTableTestHelper.insertUser({});
+
+      const module0 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Basic programming",
+        description: "e-book of basic programming",
+      });
+      const module1 = await ModulesTableTestHelper.insertModule({
+        userId: user.id,
+        title: "Database system",
+        description: "e-book of database system",
+      });
+
       const response = await request(app).get("/api/modules/search?query=");
-      const responseBody: ServiceResponse = response.body;
 
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toBeDefined();
-      expect(responseBody.responseObject).toBeNull();
-    });
+      const responseBody = response.body;
+      const { responseObject } = responseBody;
+      expect(response.statusCode).toEqual(StatusCodes.OK);
+      expect(responseBody.success).toBeTruthy();
+      expect(responseBody.message).toContain("Modules found");
 
-    it("should return bad request error when no query sent", async () => {
-      const response = await request(app).get("/api/modules/search");
-      const responseBody: ServiceResponse = response.body;
+      expect(responseObject.length).toEqual(2);
 
-      expect(response.statusCode).toEqual(StatusCodes.BAD_REQUEST);
-      expect(responseBody.success).toBeFalsy();
-      expect(responseBody.message).toBeDefined();
-      expect(responseBody.responseObject).toBeNull();
+      expect(responseObject).toStrictEqual([
+        {
+          id: module0.id,
+          title: module0.title,
+          description: module0.description,
+          faculty: module0.faculty,
+          major: module0.major,
+          course: module0.course,
+          filePath: module0.filePath,
+          upVote: module0.upVote,
+          downVote: module0.downVote,
+          createdAt: module0.createdAt.toISOString(),
+          updatedAt: module0.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+        {
+          id: module1.id,
+          title: module1.title,
+          description: module1.description,
+          faculty: module1.faculty,
+          major: module1.major,
+          course: module1.course,
+          filePath: module1.filePath,
+          upVote: module1.upVote,
+          downVote: module1.downVote,
+          createdAt: module1.createdAt.toISOString(),
+          updatedAt: module1.updatedAt.toISOString(),
+          user: {
+            username: user.username,
+          },
+        },
+      ]);
     });
   });
 });

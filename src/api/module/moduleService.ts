@@ -6,6 +6,7 @@ import { v4 as uuidv4 } from "uuid";
 import {
   type DetailedModule,
   DetailedModuleSchema,
+  type ModuleSearchQuery,
   type PostModule,
   type ShortModule,
   ShortModuleSchema,
@@ -122,12 +123,9 @@ export class ModuleService {
     }
   }
 
-  async findByQuery(query: string): Promise<ServiceResponse<ShortModule[] | null>> {
+  async findByQuery(query: string, sort: string, order: string): Promise<ServiceResponse<ShortModule[] | null>> {
     try {
-      const modules = await this.moduleRepository.findByQuery(query);
-      if (!modules || modules.length === 0) {
-        return ServiceResponse.failure("No modules found", null, StatusCodes.NOT_FOUND);
-      }
+      const modules = await this.moduleRepository.findByQuery(query, sort, order);
 
       const modulesToResponse = modules.map((module: any) => ShortModuleSchema.parse(module));
       return ServiceResponse.success("Modules found", modulesToResponse);
