@@ -1,6 +1,6 @@
 import prisma from "@/config/prisma";
 import { type ModuleVoteRecords, VoteType } from "@prisma/client";
-import type { DetailedModule, Module, PostModule, ShortModule } from "./moduleModel";
+import type { DetailedModule, Module, ModuleSearchQuery, PostModule, ShortModule } from "./moduleModel";
 
 export class ModuleRepository {
   async addModule(userId: string, payload: ShortModule) {
@@ -173,7 +173,12 @@ export class ModuleRepository {
     return vote;
   }
 
-  async findByQuery(query: string): Promise<Module[]> {
+  async findByQuery(query: string, sort: string, order: string): Promise<Module[]> {
+    const sortOrder = order === "desc" ? "desc" : "asc";
+
+    const validSortFields = ["faculty", "major", "createdAt"];
+    const sortBy = validSortFields.includes(sort) ? sort : "createdAt";
+
     return await prisma.modules.findMany({
       where: {
         OR: [
@@ -190,6 +195,9 @@ export class ModuleRepository {
             },
           },
         ],
+      },
+      orderBy: {
+        [sortBy]: sortOrder,
       },
       select: {
         id: true,

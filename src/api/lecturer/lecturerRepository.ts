@@ -1,21 +1,11 @@
-import { PrismaClient } from "@prisma/client";
+import { type Lecturers, PrismaClient } from "@prisma/client";
 import type { Lecturer } from "./lecturerModel";
 
 const prisma = new PrismaClient();
 
 export class LecturerRepository {
   async findAll(): Promise<Lecturer[]> {
-    return await prisma.lecturers.findMany({
-      select: {
-        id: true,
-        name: true,
-        faculty: true,
-        department: true,
-        upVote: true,
-        downVote: true,
-        rating: true,
-      },
-    });
+    return await prisma.lecturers.findMany({});
   }
 
   async findById(id: string): Promise<Lecturer | null> {
@@ -35,13 +25,21 @@ export class LecturerRepository {
     });
   }
 
-  async findByQuery(query: string): Promise<Lecturer[] | null> {
+  async findByQuery(query: string, sort: string, order: string): Promise<Lecturer[]> {
+    const sortOrder = order === "desc" ? "desc" : "asc";
+
+    const validSortFields = ["department", "faculty", "createdAt"];
+    const sortBy = validSortFields.includes(sort) ? sort : "createdAt";
+
     return await prisma.lecturers.findMany({
       where: {
         name: {
           contains: query,
           mode: "insensitive",
         },
+      },
+      orderBy: {
+        [sortBy]: sortOrder,
       },
     });
   }

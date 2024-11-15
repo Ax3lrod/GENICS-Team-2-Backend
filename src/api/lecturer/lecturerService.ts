@@ -46,12 +46,9 @@ export class LecturerService {
     }
   }
 
-  async findByQuery(query: string): Promise<ServiceResponse<Lecturer[] | null>> {
+  async findByQuery(query: string, sort: string, order: string): Promise<ServiceResponse<Lecturer[] | null>> {
     try {
-      const lecturers = await this.lecturerRepository.findByQuery(query);
-      if (!lecturers || lecturers.length === 0) {
-        return ServiceResponse.failure("No lecturers found", null, StatusCodes.NOT_FOUND);
-      }
+      const lecturers = await this.lecturerRepository.findByQuery(query, sort, order);
 
       const lecturersToResponse = lecturers.map((lecturer) => ShortLecturerSchema.parse(lecturer));
       return ServiceResponse.success("Lecturers found", lecturersToResponse);

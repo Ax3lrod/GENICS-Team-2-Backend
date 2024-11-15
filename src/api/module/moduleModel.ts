@@ -127,12 +127,9 @@ export const DetailedModuleSchema = z
   .strip();
 
 export const SearchSchema = z.object({
-  query: z
-    .string({
-      required_error: "Parameter 'query' harus ada",
-      invalid_type_error: "Parameter 'query' harus berupa string",
-    })
-    .min(1, "Query tidak boleh kosong"),
+  query: z.string().optional(),
+  sort: z.enum(["major", "faculty", "createdAt"]).optional(),
+  order: z.enum(["asc", "desc"]).optional(),
 });
 
 export const postModuleSchema = z.object({
@@ -148,3 +145,9 @@ export const postModuleFileSchema = z.object({
     filename: z.string(),
   }),
 });
+
+export type ModuleSearchQuery = {
+  query: string;
+  sort: string;
+  order: string;
+};

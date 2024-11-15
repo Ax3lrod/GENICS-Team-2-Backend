@@ -1,5 +1,6 @@
 import { handleServiceResponse, validateRequest } from "@/common/utils/httpHandlers";
 import type { Request, RequestHandler, Response } from "express";
+import type { ModuleSearchQuery } from "./moduleModel";
 import { moduleService } from "./moduleService";
 
 class ModuleController {
@@ -43,9 +44,8 @@ class ModuleController {
   };
 
   public getModulesSearch: RequestHandler = async (req: Request, res: Response) => {
-    const { query } = req.query;
-
-    const serviceResponse = await moduleService.findByQuery(query as string);
+    const { query, sort, order } = req.query;
+    const serviceResponse = await moduleService.findByQuery(query as string, sort as string, order as string);
     handleServiceResponse(serviceResponse, res);
   };
 }
