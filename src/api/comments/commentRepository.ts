@@ -15,8 +15,8 @@ export class CommentRepository {
 
   async createComment(data: {
     userId: string;
-    moduleId?: string;
-    lecturerId?: string;
+    moduleId?: string | null;
+    lecturerId?: string | null;
     feedback: string;
     rating: number;
   }) {
@@ -29,5 +29,55 @@ export class CommentRepository {
     return prisma.comments.delete({
       where: { id: commentId },
     });
+  }
+
+  async getModuleComments({
+    page,
+    pageSize,
+  }: {
+    page: number;
+    pageSize: number;
+  }) {
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    const [comments, totalCount] = await prisma.$transaction([
+      prisma.comments.findMany({
+        where: { lecturerId: null },
+        skip,
+        take,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.comments.count({
+        where: { lecturerId: null },
+      }),
+    ]);
+
+    return { comments, totalCount };
+  }
+
+  async getLecturerComments({
+    page,
+    pageSize,
+  }: {
+    page: number;
+    pageSize: number;
+  }) {
+    const skip = (page - 1) * pageSize;
+    const take = pageSize;
+
+    const [comments, totalCount] = await prisma.$transaction([
+      prisma.comments.findMany({
+        where: { moduleId: null },
+        skip,
+        take,
+        orderBy: { createdAt: "desc" },
+      }),
+      prisma.comments.count({
+        where: { lecturerId: null },
+      }),
+    ]);
+
+    return { comments, totalCount };
   }
 }
