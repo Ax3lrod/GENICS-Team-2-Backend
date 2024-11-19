@@ -37,15 +37,14 @@ export class ModuleService {
     }
   }
 
-  async findAll(): Promise<ServiceResponse<ShortModule[] | null>> {
+  async findAll(page: number, limit: number, search: string) {
     try {
-      const modules = await this.moduleRepository.findAllAsync();
-      if (!modules || modules.length === 0) {
+      const modules = await this.moduleRepository.findAllAsync(page, limit, search);
+      if (!modules || modules.totalCounts === 0) {
         return ServiceResponse.failure("No modules found", null, StatusCodes.NOT_FOUND);
       }
 
-      const modulesToResponse = modules.map((module) => ShortModuleSchema.parse(module));
-      return ServiceResponse.success("Modules found", modulesToResponse);
+      return ServiceResponse.success("Modules found", modules);
     } catch (error) {
       return ServiceResponse.failure(
         "An error occured while retrieving modules",

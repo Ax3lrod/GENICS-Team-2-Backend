@@ -1,4 +1,5 @@
 import prisma from "@/config/prisma";
+import type { Prisma } from "@prisma/client";
 import { type ModuleVoteRecords, VoteType } from "@prisma/client";
 import type { DetailedModule, Module, ModuleSearchQuery, PostModule, ShortModule } from "./moduleModel";
 
@@ -30,8 +31,24 @@ export class ModuleRepository {
     });
   }
 
-  async findAllAsync(): Promise<ShortModule[]> {
-    return prisma.modules.findMany({
+  async findAllAsync(page: number, limit: number, search: string) {
+    const skip = (page - 1) * limit;
+    const searchFilter: Prisma.ModulesWhereInput = search
+      ? {
+          OR: [
+            { title: { contains: search, mode: "insensitive" } },
+            { description: { contains: search, mode: "insensitive" } },
+            { faculty: { contains: search, mode: "insensitive" } },
+            { department: { contains: search, mode: "insensitive" } },
+            { course: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    const modules = await prisma.modules.findMany({
+      where: searchFilter,
+      skip: skip,
+      take: limit,
       select: {
         id: true,
         title: true,
@@ -51,6 +68,18 @@ export class ModuleRepository {
         },
       },
     });
+
+    const totalCounts = await prisma.modules.count({
+      where: searchFilter,
+    });
+
+    const totalPages = Math.ceil(totalCounts / limit);
+
+    return {
+      modules,
+      totalCounts,
+      totalPages,
+    };
   }
 
   async findByIdAsync(id: string): Promise<DetailedModule | null> {

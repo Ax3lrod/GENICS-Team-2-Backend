@@ -3,8 +3,12 @@ import type { Request, RequestHandler, Response } from "express";
 import { lecturerService } from "./lecturerService";
 
 class LecturerController {
-  public getLecturers: RequestHandler = async (_req: Request, res: Response) => {
-    const serviceResponse = await lecturerService.findAll();
+  public getLecturers: RequestHandler = async (req: Request, res: Response) => {
+    const page = Number.parseInt(req.query.page as string, 10) || 1;
+    const limit = Number.parseInt(req.query.limit as string, 10) || 10;
+    const search = (req.query.search as string) || "";
+
+    const serviceResponse = await lecturerService.findAll(page, limit, search);
     handleServiceResponse(serviceResponse, res);
   };
 

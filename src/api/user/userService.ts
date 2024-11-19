@@ -10,10 +10,10 @@ export class UserService {
     this.userRepository = repository;
   }
 
-  async findAll() {
+  async findAll(page: number, limit: number, search: string) {
     try {
-      const users = await this.userRepository.findAllAsync();
-      if (!users || users.length === 0) {
+      const users = await this.userRepository.findAllAsync(page, limit, search);
+      if (!users || users.totalCounts === 0) {
         return ServiceResponse.failure("No users found", null, StatusCodes.NOT_FOUND);
       }
       return ServiceResponse.success("Users found", users);

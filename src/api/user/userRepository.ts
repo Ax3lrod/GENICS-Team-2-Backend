@@ -1,4 +1,5 @@
 import prisma from "@/config/prisma";
+import type { Prisma } from "@prisma/client";
 import bcrypt from "bcrypt";
 import type { User } from "./userModel";
 
@@ -15,8 +16,23 @@ export class UserRepository {
     });
   }
 
-  async findAllAsync() {
-    return await prisma.users.findMany({
+  async findAllAsync(page: number, limit: number, search: string) {
+    const skip = (page - 1) * limit;
+    const searchFilter: Prisma.UsersWhereInput = search
+      ? {
+          OR: [
+            { username: { contains: search, mode: "insensitive" } },
+            { email: { contains: search, mode: "insensitive" } },
+            { faculty: { contains: search, mode: "insensitive" } },
+            { department: { contains: search, mode: "insensitive" } },
+          ],
+        }
+      : {};
+
+    const users = await prisma.users.findMany({
+      where: searchFilter,
+      skip: skip,
+      take: limit,
       select: {
         id: true,
         username: true,
@@ -25,6 +41,18 @@ export class UserRepository {
         department: true,
       },
     });
+
+    const totalCounts = await prisma.users.count({
+      where: searchFilter,
+    });
+
+    const totalPages = Math.ceil(totalCounts / limit);
+
+    return {
+      users,
+      totalCounts,
+      totalPages,
+    };
   }
 
   async findByIdAsync(id: string) {

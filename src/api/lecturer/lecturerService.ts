@@ -10,15 +10,14 @@ export class LecturerService {
     this.lecturerRepository = repository;
   }
 
-  async findAll(): Promise<ServiceResponse<Lecturer[] | null>> {
+  async findAll(page: number, limit: number, search: string) {
     try {
-      const lecturers = await this.lecturerRepository.findAll();
-      if (!lecturers || lecturers.length === 0) {
+      const lecturers = await this.lecturerRepository.findAll(page, limit, search);
+      if (!lecturers || lecturers.totalCounts === 0) {
         return ServiceResponse.failure("No lecturers found", null, StatusCodes.NOT_FOUND);
       }
 
-      const lecturersToResponse = lecturers.map((lecturer) => ShortLecturerSchema.parse(lecturer));
-      return ServiceResponse.success("Lecturers found", lecturersToResponse);
+      return ServiceResponse.success("Lecturers found", lecturers);
     } catch (error) {
       return ServiceResponse.failure(
         "An error occurred while retrieving lecturers",

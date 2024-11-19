@@ -13,8 +13,12 @@ class ModuleController {
     handleServiceResponse(serviceResponse, res);
   };
 
-  public getModules: RequestHandler = async (_req: Request, res: Response) => {
-    const serviceResponse = await moduleService.findAll();
+  public getModules: RequestHandler = async (req: Request, res: Response) => {
+    const page = Number.parseInt(req.query.page as string, 10) || 1;
+    const limit = Number.parseInt(req.query.limit as string, 10) || 10;
+    const search = (req.query.search as string) || "";
+
+    const serviceResponse = await moduleService.findAll(page, limit, search);
     handleServiceResponse(serviceResponse, res);
   };
 
