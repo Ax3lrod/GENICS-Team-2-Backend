@@ -139,15 +139,8 @@ commentRegistry.registerPath({
 });
 
 commentRouter.get("/module/:moduleId", commentController.getCommentsByModuleId);
-commentRouter.get(
-  "/lecturer/:lecturerId",
-  commentController.getCommentsByLecturerId
-);
+commentRouter.get("/lecturer/:lecturerId", commentController.getCommentsByLecturerId);
 commentRouter.post("/", authenticateJwt, commentController.createComment);
-commentRouter.delete(
-  "/:commentId",
-  authenticateJwt,
-  commentController.deleteComment
-);
+commentRouter.delete("/:commentId", authenticateJwt, commentController.deleteComment);
 commentRouter.get("/module", commentController.getModuleComments);
 commentRouter.get("/lecturer", commentController.getLecturerComments);

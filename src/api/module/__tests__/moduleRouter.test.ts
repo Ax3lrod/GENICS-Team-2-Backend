@@ -67,7 +67,7 @@ describe("Module API Endpoints", () => {
         .field("title", "title")
         .field("description", "description")
         .field("faculty", "faculty")
-        .field("major", "major")
+        .field("department", "department")
         .field("course", "course")
         .attach("file", filePath)
         .set("Authorization", `Bearer ${token}`);
@@ -83,7 +83,7 @@ describe("Module API Endpoints", () => {
         title: "title",
         description: "description",
         faculty: "faculty",
-        major: "major",
+        department: "department",
         course: "course",
         filePath: `/modules/${responseObject.id}.pdf`,
         upVote: 0,
@@ -112,7 +112,7 @@ describe("Module API Endpoints", () => {
         .field("title", "title")
         .field("description", "description")
         .field("faculty", "faculty")
-        .field("major", "major")
+        .field("department", "department")
         .field("course", "course")
         .set("Authorization", `Bearer ${token}`);
 
@@ -130,7 +130,7 @@ describe("Module API Endpoints", () => {
         .field("title", "title")
         .field("description", "description")
         .field("faculty", "faculty")
-        .field("major", "major")
+        .field("department", "department")
         .field("course", "course");
 
       const responseBody: ServiceResponse = response.body;
@@ -152,7 +152,7 @@ describe("Module API Endpoints", () => {
         .set("Content-Type", "multipart/form-data")
         .field("description", "description")
         .field("faculty", "faculty")
-        .field("major", "major")
+        .field("department", "department")
         .field("course", "course")
         .attach("file", filePath)
         .set("Authorization", `Bearer ${token}`);
@@ -187,7 +187,7 @@ describe("Module API Endpoints", () => {
         title: module0.title,
         description: module0.description,
         faculty: module0.faculty,
-        major: module0.major,
+        department: module0.department,
         course: module0.course,
         filePath: module0.filePath,
         upVote: module0.upVote,
@@ -203,7 +203,7 @@ describe("Module API Endpoints", () => {
         title: module1.title,
         description: module1.description,
         faculty: module1.faculty,
-        major: module1.major,
+        department: module1.department,
         course: module1.course,
         filePath: module1.filePath,
         upVote: module1.upVote,
@@ -219,7 +219,7 @@ describe("Module API Endpoints", () => {
         title: module2.title,
         description: module2.description,
         faculty: module2.faculty,
-        major: module2.major,
+        department: module2.department,
         course: module2.course,
         filePath: module2.filePath,
         upVote: module2.upVote,
@@ -279,7 +279,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 1,
@@ -352,7 +352,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 1,
@@ -394,7 +394,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 0,
@@ -436,7 +436,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 1,
@@ -499,7 +499,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 0,
@@ -541,7 +541,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 0,
@@ -583,7 +583,7 @@ describe("Module API Endpoints", () => {
         title: module.title,
         description: module.description,
         faculty: module.faculty,
-        major: module.major,
+        department: module.department,
         course: module.course,
         filePath: module.filePath,
         upVote: 0,
@@ -633,7 +633,7 @@ describe("Module API Endpoints", () => {
           title: module0.title,
           description: module0.description,
           faculty: module0.faculty,
-          major: module0.major,
+          department: module0.department,
           course: module0.course,
           filePath: module0.filePath,
           upVote: module0.upVote,
@@ -649,7 +649,7 @@ describe("Module API Endpoints", () => {
           title: module1.title,
           description: module1.description,
           faculty: module1.faculty,
-          major: module1.major,
+          department: module1.department,
           course: module1.course,
           filePath: module1.filePath,
           upVote: module1.upVote,
@@ -698,7 +698,7 @@ describe("Module API Endpoints", () => {
           title: module0.title,
           description: module0.description,
           faculty: module0.faculty,
-          major: module0.major,
+          department: module0.department,
           course: module0.course,
           filePath: module0.filePath,
           upVote: module0.upVote,
@@ -714,7 +714,7 @@ describe("Module API Endpoints", () => {
           title: module1.title,
           description: module1.description,
           faculty: module1.faculty,
-          major: module1.major,
+          department: module1.department,
           course: module1.course,
           filePath: module1.filePath,
           upVote: module1.upVote,
@@ -763,27 +763,27 @@ describe("Module API Endpoints", () => {
       const module0 = await ModulesTableTestHelper.insertModule({
         userId: user.id,
         title: "Intro to Chemistry",
-        major: "Chemistry",
+        department: "Chemistry",
       });
       const module1 = await ModulesTableTestHelper.insertModule({
         userId: user.id,
         title: "Intro to Physics",
-        major: "Physics",
+        department: "Physics",
       });
       const module2 = await ModulesTableTestHelper.insertModule({
         userId: user.id,
         title: "Intro to Biology",
-        major: "Biology",
+        department: "Biology",
       });
 
-      const response = await request(app).get("/api/modules/search?query=i&sort=major");
+      const response = await request(app).get("/api/modules/search?query=i&sort=department");
 
       const responseBody = response.body;
       const { responseObject } = responseBody;
       expect(response.statusCode).toEqual(StatusCodes.OK);
-      expect(responseObject[0].major).toBe("Biology");
-      expect(responseObject[1].major).toBe("Chemistry");
-      expect(responseObject[2].major).toBe("Physics");
+      expect(responseObject[0].department).toBe("Biology");
+      expect(responseObject[1].department).toBe("Chemistry");
+      expect(responseObject[2].department).toBe("Physics");
     });
 
     it("should return modules sorted by createdAt", async () => {
@@ -854,7 +854,7 @@ describe("Module API Endpoints", () => {
           title: module0.title,
           description: module0.description,
           faculty: module0.faculty,
-          major: module0.major,
+          department: module0.department,
           course: module0.course,
           filePath: module0.filePath,
           upVote: module0.upVote,
@@ -870,7 +870,7 @@ describe("Module API Endpoints", () => {
           title: module1.title,
           description: module1.description,
           faculty: module1.faculty,
-          major: module1.major,
+          department: module1.department,
           course: module1.course,
           filePath: module1.filePath,
           upVote: module1.upVote,

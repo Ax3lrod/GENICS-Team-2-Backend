@@ -6,7 +6,7 @@ export const ModulesTableTestHelper = {
     userId,
     title = "title",
     faculty = "faculty",
-    major = "major",
+    department = "department",
     course = "course",
     description = "description",
     filePath = "www.google.com",
@@ -14,7 +14,7 @@ export const ModulesTableTestHelper = {
     userId: string;
     title?: string;
     faculty?: string;
-    major?: string;
+    department?: string;
     course?: string;
     description?: string;
     filePath?: string;
@@ -24,7 +24,7 @@ export const ModulesTableTestHelper = {
         userId,
         title,
         faculty,
-        major,
+        department,
         course,
         description,
         filePath,

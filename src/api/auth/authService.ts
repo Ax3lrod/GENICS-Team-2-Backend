@@ -39,7 +39,7 @@ export class AuthService {
         req.username,
         req.email,
         req.faculty,
-        req.major,
+        req.department,
         hashedPassword,
       );
 

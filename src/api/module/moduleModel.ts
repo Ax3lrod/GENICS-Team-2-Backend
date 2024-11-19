@@ -10,7 +10,7 @@ export type Module = {
   title: string;
   description: string;
   faculty: string;
-  major: string;
+  department: string;
   course: string;
   filePath: string | null;
   upVote: number;
@@ -24,7 +24,7 @@ export type DetailedModule = {
   title: string;
   description: string;
   faculty: string;
-  major: string;
+  department: string;
   course: string;
   filePath: string | null;
   upVote: number;
@@ -50,7 +50,7 @@ export type ShortModule = {
   title: string;
   description: string;
   faculty: string;
-  major: string;
+  department: string;
   course: string;
   filePath: string | null;
 };
@@ -60,7 +60,7 @@ export type PostModule = {
   title: string;
   description: string;
   faculty: string;
-  major: string;
+  department: string;
   course: string;
 };
 
@@ -78,7 +78,7 @@ export const ShortModuleSchema = z
     title: z.string(),
     description: z.string(),
     faculty: z.string(),
-    major: z.string(),
+    department: z.string(),
     course: z.string(),
     filePath: z.string(),
     upVote: z.number(),
@@ -100,7 +100,7 @@ export const DetailedModuleSchema = z
     title: z.string(),
     description: z.string(),
     faculty: z.string(),
-    major: z.string(),
+    department: z.string(),
     course: z.string(),
     filePath: z.string(),
     upVote: z.number(),
@@ -128,7 +128,7 @@ export const DetailedModuleSchema = z
 
 export const SearchSchema = z.object({
   query: z.string().optional(),
-  sort: z.enum(["major", "faculty", "createdAt"]).optional(),
+  sort: z.enum(["department", "faculty", "createdAt"]).optional(),
   order: z.enum(["asc", "desc"]).optional(),
 });
 
@@ -136,7 +136,7 @@ export const postModuleSchema = z.object({
   title: z.string(),
   description: z.string(),
   faculty: z.string(),
-  major: z.string(),
+  department: z.string(),
   course: z.string(),
 });
 

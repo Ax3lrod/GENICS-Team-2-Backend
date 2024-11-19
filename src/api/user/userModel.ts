@@ -10,7 +10,7 @@ export type User = {
   username: string;
   email: string;
   faculty: string;
-  major: string;
+  department: string;
   password: string;
   uploadedModules?: {
     id: string;
@@ -31,7 +31,7 @@ export const UserSchema = z.object({
   username: z.string(),
   email: z.string(),
   faculty: z.string(),
-  major: z.string(),
+  department: z.string(),
   password: z.string(),
   uploadedModules: z
     .array(
