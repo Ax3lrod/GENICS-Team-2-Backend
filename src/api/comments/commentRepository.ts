@@ -20,9 +20,23 @@ export class CommentRepository {
     feedback: string;
     rating: number;
   }) {
-    return prisma.comments.create({
+    const newComment = prisma.comments.create({
       data,
     });
+
+    if (data.lecturerId) {
+      const newRating = await prisma.comments.aggregate({
+        where: { lecturerId: data.lecturerId },
+        _avg: { rating: true },
+      });
+
+      await prisma.lecturers.update({
+        where: { id: data.lecturerId },
+        data: { rating: newRating._avg.rating || 0 },
+      });
+    }
+
+    return newComment;
   }
 
   async deleteComment(commentId: string) {
