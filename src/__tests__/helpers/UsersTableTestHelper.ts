@@ -8,7 +8,7 @@ export const UsersTableTestHelper = {
     username = `user-${Date.now()}`,
     email = `${Date.now()}@example.com`,
     faculty = "Computer Science",
-    major = "Software Engineering",
+    department = "Software Engineering",
     password = "password",
   }) {
     const hashedPassword = await hashManager.hash(password);
@@ -18,7 +18,7 @@ export const UsersTableTestHelper = {
         username,
         email,
         faculty,
-        major,
+        department,
         password: hashedPassword,
       },
     });

@@ -17,7 +17,7 @@ model Users {
   username             String              @unique
   email                String              @unique
   faculty              String
-  major                String
+  department           String              @default("default_department")
   password             String
   passwordResetToken   String?
   passwordResetExpires DateTime?
@@ -43,7 +43,7 @@ model Modules {
   id          String              @id @default(uuid())
   title       String
   faculty     String
-  major       String
+  department  String
   course      String
   description String
   filePath    String?

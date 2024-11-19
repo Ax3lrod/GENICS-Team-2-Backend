@@ -49,7 +49,7 @@ describe("Auth API Endpoints", () => {
         email: "test@example.com",
         username: "genics",
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
         password: "password",
       });
       const responseBody: ServiceResponse = response.body;
@@ -62,14 +62,14 @@ describe("Auth API Endpoints", () => {
         email: "test@example.com",
         username: "genics",
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
       });
     });
 
     it("should throw error when payload is invalid", async () => {
       const response = await request(app).post("/api/auth/register").send({
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
         password: "password",
       });
       const responseBody: ServiceResponse = response.body;
@@ -87,7 +87,7 @@ describe("Auth API Endpoints", () => {
         email: "test@example.com",
         username: user.username,
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
         password: "password",
       });
       const responseBody: ServiceResponse = response.body;
@@ -105,7 +105,7 @@ describe("Auth API Endpoints", () => {
         email: user.email,
         username: "test",
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
         password: "password",
       });
       const responseBody: ServiceResponse = response.body;
@@ -121,7 +121,7 @@ describe("Auth API Endpoints", () => {
         email: "test@example.com",
         username: "test",
         faculty: "SI",
-        major: "FTEIC",
+        department: "FTEIC",
         password: "123",
       });
       const responseBody: ServiceResponse = response.body;
@@ -154,7 +154,7 @@ describe("Auth API Endpoints", () => {
           id: user.id,
           username: user.username,
           faculty: user.faculty,
-          major: user.major,
+          department: user.department,
           email: user.email,
         },
         token: expect.any(String),
@@ -215,7 +215,7 @@ describe("Auth API Endpoints", () => {
         username: user.username,
         email: user.email,
         faculty: user.faculty,
-        major: user.major,
+        department: user.department,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
         uploadedModules: [],

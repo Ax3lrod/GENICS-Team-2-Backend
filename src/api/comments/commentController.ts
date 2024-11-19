@@ -7,20 +7,14 @@ import { commentService } from "./commentService";
 // import { CreateCommentSchema, GetCommentSchema } from "./commentModel";
 
 class CommentController {
-  public getCommentsByModuleId: RequestHandler = async (
-    req: Request,
-    res: Response
-  ) => {
+  public getCommentsByModuleId: RequestHandler = async (req: Request, res: Response) => {
     const { moduleId } = req.params;
 
     const serviceResponse = await commentService.findByModuleId(moduleId);
     handleServiceResponse(serviceResponse, res);
   };
 
-  public getCommentsByLecturerId: RequestHandler = async (
-    req: Request,
-    res: Response
-  ) => {
+  public getCommentsByLecturerId: RequestHandler = async (req: Request, res: Response) => {
     const { lecturerId } = req.params;
     // console.log("on controller: " + lecturerId)
     const serviceResponse = await commentService.findByLecturerId(lecturerId);
@@ -29,10 +23,7 @@ class CommentController {
 
   public createComment: RequestHandler = async (req: any, res: Response) => {
     if (req.user === null || req.user === undefined || !req.user.id) {
-      const response = ServiceResponse.failure(
-        "Unauthorized user",
-        StatusCodes.UNAUTHORIZED
-      );
+      const response = ServiceResponse.failure("Unauthorized user", StatusCodes.UNAUTHORIZED);
       handleServiceResponse(response, res);
       return;
     }
@@ -51,10 +42,7 @@ class CommentController {
     handleServiceResponse(serviceResponse, res);
   };
 
-  public deleteComment: RequestHandler = async (
-    req: Request,
-    res: Response
-  ) => {
+  public deleteComment: RequestHandler = async (req: Request, res: Response) => {
     const { commentId } = req.params;
 
     const serviceResponse = await commentService.deleteComment(commentId);
@@ -65,8 +53,8 @@ class CommentController {
     const { page = 1, pageSize = 10 } = req.query;
 
     const serviceResponse = await commentService.getModuleComments({
-      page: parseInt(page as string, 10),
-      pageSize: parseInt(pageSize as string, 10),
+      page: Number.parseInt(page as string, 10),
+      pageSize: Number.parseInt(pageSize as string, 10),
     });
 
     handleServiceResponse(serviceResponse, res);
@@ -76,8 +64,8 @@ class CommentController {
     const { page = 1, pageSize = 10 } = req.query;
 
     const serviceResponse = await commentService.getLecturerComments({
-      page: parseInt(page as string, 10),
-      pageSize: parseInt(pageSize as string, 10),
+      page: Number.parseInt(page as string, 10),
+      pageSize: Number.parseInt(pageSize as string, 10),
     });
 
     handleServiceResponse(serviceResponse, res);

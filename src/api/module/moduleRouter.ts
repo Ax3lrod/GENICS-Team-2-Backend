@@ -44,7 +44,7 @@ moduleRegistry.registerPath({
             title: { type: "string", description: "Title of the module" },
             description: { type: "string", description: "Description of the module" },
             faculty: { type: "string", description: "Faculty associated with the module" },
-            major: { type: "string", description: "Major associated with the module" },
+            department: { type: "string", description: "Department associated with the module" },
             course: { type: "string", description: "Course associated with the module" },
             file: {
               type: "string",
@@ -52,7 +52,7 @@ moduleRegistry.registerPath({
               description: "File upload for the module",
             },
           },
-          required: ["title", "description", "faculty", "major", "course"],
+          required: ["title", "description", "faculty", "department", "course"],
         },
       },
     },

@@ -59,14 +59,14 @@ describe("Users API Endpoints", () => {
           id: user1.id,
           username: user1.username,
           faculty: user1.faculty,
-          major: user1.major,
+          department: user1.department,
           email: user1.email,
         },
         {
           id: user2.id,
           username: user2.username,
           faculty: user2.faculty,
-          major: user2.major,
+          department: user2.department,
           email: user2.email,
         },
       ]);
@@ -97,7 +97,7 @@ describe("Users API Endpoints", () => {
         id: user.id,
         username: user.username,
         faculty: user.faculty,
-        major: user.major,
+        department: user.department,
         email: user.email,
       });
     });
@@ -123,7 +123,7 @@ describe("Users API Endpoints", () => {
         username: user.username,
         email: user.email,
         faculty: user.faculty,
-        major: user.major,
+        department: user.department,
         createdAt: user.createdAt.toISOString(),
         updatedAt: user.updatedAt.toISOString(),
         uploadedModules: [

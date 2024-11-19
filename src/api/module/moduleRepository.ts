@@ -14,7 +14,7 @@ export class ModuleRepository {
         title: true,
         description: true,
         faculty: true,
-        major: true,
+        department: true,
         course: true,
         filePath: true,
         upVote: true,
@@ -37,7 +37,7 @@ export class ModuleRepository {
         title: true,
         description: true,
         faculty: true,
-        major: true,
+        department: true,
         course: true,
         filePath: true,
         upVote: true,
@@ -61,7 +61,7 @@ export class ModuleRepository {
         title: true,
         description: true,
         faculty: true,
-        major: true,
+        department: true,
         course: true,
         filePath: true,
         upVote: true,
@@ -176,7 +176,7 @@ export class ModuleRepository {
   async findByQuery(query: string, sort: string, order: string): Promise<Module[]> {
     const sortOrder = order === "desc" ? "desc" : "asc";
 
-    const validSortFields = ["faculty", "major", "createdAt"];
+    const validSortFields = ["faculty", "department", "createdAt"];
     const sortBy = validSortFields.includes(sort) ? sort : "createdAt";
 
     return await prisma.modules.findMany({
@@ -204,7 +204,7 @@ export class ModuleRepository {
         title: true,
         description: true,
         faculty: true,
-        major: true,
+        department: true,
         course: true,
         filePath: true,
         upVote: true,

@@ -3,13 +3,13 @@ import bcrypt from "bcrypt";
 import type { User } from "./userModel";
 
 export class UserRepository {
-  async createUser(username: string, email: string, faculty: string, major: string, password: string) {
+  async createUser(username: string, email: string, faculty: string, department: string, password: string) {
     return await prisma.users.create({
       data: {
         username,
         email,
         faculty,
-        major,
+        department,
         password,
       },
     });
@@ -22,7 +22,7 @@ export class UserRepository {
         username: true,
         email: true,
         faculty: true,
-        major: true,
+        department: true,
       },
     });
   }
@@ -35,7 +35,7 @@ export class UserRepository {
         username: true,
         email: true,
         faculty: true,
-        major: true,
+        department: true,
         createdAt: true,
         updatedAt: true,
         uploadedModules: {
@@ -81,7 +81,7 @@ export class UserRepository {
         email: true,
         password: true,
         faculty: true,
-        major: true,
+        department: true,
         uploadedModules: {
           select: {
             id: true,
@@ -112,7 +112,7 @@ export class UserRepository {
         username: true,
         email: true,
         faculty: true,
-        major: true,
+        department: true,
 
         uploadedModules: {
           select: {
